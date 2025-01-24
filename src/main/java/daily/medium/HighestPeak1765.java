@@ -1,6 +1,8 @@
 package daily.medium;
 
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
 
 public class HighestPeak1765 {
     public static void main(String[] args) {
@@ -9,7 +11,7 @@ public class HighestPeak1765 {
         int[][] res = h.highestPeak(isWater);
     }
 
-//    dp; time: O(m.n), space: O(m.n)
+//    dp; time: O(m.n), space: O(m.n) [faster]
     public int[][] highestPeak(int[][] isWater) {
         int rows = isWater.length, cols = isWater[0].length;
         int[][] cellHeights = new int[rows][cols];
@@ -71,6 +73,42 @@ public class HighestPeak1765 {
     private boolean isValidCell(int row, int col, int rows, int cols) {
         return row >= 0 && col >= 0 && row < rows && col < cols;
     }
+
+//    bfs; time: O(m.n), space: O(m.n)
+    public int[][] highestPeak1(int[][] isWater) {
+        int rows = isWater.length, cols = isWater[0].length;
+        int[] dx = {1,-1,0,0};
+        int[] dy = {0,0,1,-1};
+        int[][] cellHeights = new int[rows][cols];
+        for(int[] row : cellHeights)
+            Arrays.fill(row, -1);
+        Deque<int[]> queue = new ArrayDeque<>();
+        for(int row = 0 ; row < rows ; row++) {
+            for(int col = 0 ; col < cols ; col++) {
+                if(isWater[row][col] == 1) {
+                    cellHeights[row][col] = 0;
+                    queue.offer(new int[]{row,col});
+                }
+            }
+        }
+        int levelHeight = 1;
+        while(!queue.isEmpty()) {
+            int size = queue.size();
+            for(int i = 0 ; i < size ; i++) {
+                int[] cell = queue.poll();
+                for(int dir = 0 ; dir < 4 ; dir++) {
+                    int neighbourX = cell[0] + dx[dir];
+                    int neighbourY = cell[1] + dy[dir];
+                    if(isValidCell(neighbourX, neighbourY, rows, cols) && cellHeights[neighbourX][neighbourY] == -1) {
+                        cellHeights[neighbourX][neighbourY] = levelHeight;
+                        queue.offer(new int[]{neighbourX, neighbourY});
+                    }
+                }
+            }
+            levelHeight++;
+        }
+        return cellHeights;
+    }
 }
 
 /*
@@ -105,7 +143,8 @@ There is at least one water cell.
 
 /*
 DP:
-In this approach, we build on the idea that the height of each cell should be the smallest distance to any water cell. From there, we observe that once we know the smallest distances of a cell’s neighboring cells, calculating the distance for the current cell becomes straightforward — it’s just the smallest of the neighbors’ distances plus one. The core idea is to use dynamic programming to compute these distances efficiently.
+In this approach, we build on the idea that the height of each cell should be the smallest distance to any water cell. From there, we observe that once we know the smallest distances of a cell’s neighboring cells,
+calculating the distance for the current cell becomes straightforward — it’s just the smallest of the neighbors’ distances plus one. The core idea is to use dynamic programming to compute these distances efficiently.
 Dynamic programming works well here because:
 Each cell's height can be derived from the heights of its neighboring cells.
 By iterating over the grid in a specific order, we can ensure that all necessary states are computed before being used.
@@ -113,4 +152,13 @@ However, the challenge is figuring out the correct order to compute these states
 Let’s simplify by imagining we can only move down or right. In that case, the top-left corner has no choices — it’s either a water cell or not reachable. Similarly, for the first row and column, we only have options from neighboring cells directly below or to the right.
 Using this, we can fill the DP table row by row and column by column, in common order.
 Finally, we perform a second pass, moving upward or left, to correct any distances that were overestimated during the first pass, which only considered partial directions (top and left).
- */
+
+BFS:
+For every cell in the grid, we calculate its smallest distance to any water cell and assign that value as its height.
+Heights increase smoothly from water cells, ensuring the highest peak is at the farthest distance from all water cells.
+This can be visualized as a "ripple effect" where water cells propagate their distances outward, assigning heights to nearby land cells.
+This approach works intuitively for two reasons:
+It follows the rule that the height difference between two adjacent cells is at most one. This is because the minimum distance to water for any two neighboring cells cannot differ by more than one.
+It’s optimal because it ensures that the height of the cells increases consistently as we move farther from water cells, maximizing the highest peak on the map.
+To find the shortest distance from any cell to a water cell, we use Breadth-First Search (BFS) starting from all water cells. When a land cell is reached for the first time, its shortest distance to a water cell is set.
+*/
