@@ -78,7 +78,7 @@ public class CourseScheduleIII1462 {
         return result;
     }
 
-//    floyd warshall; time: O(N^3 + Q), space: O(N^2)
+//    floyd warshall; time: O(N^3 + Q), space: O(N^2) [fastest]
     public List<Boolean> checkIfPrerequisite2(int numCourses, int[][] prerequisites, int[][] queries) {
         boolean[][] isPrerequisite = new boolean[numCourses][numCourses];
         for(int[] edge : prerequisites) {
