@@ -129,4 +129,21 @@ Then we iterate over queries and for each we perform DFS that can take O(V+E) wh
 Hence, the total time complexity equals O(Q⋅N^2).
 Space complexity: O(N^2)
 The adjacency list requires O(N^2) as it stores every edge in the list prerequisites. For the DFS traversal, we need a visited array of size O(N) and the recursive stack for DFS calls requires O(N) space in the worsts case. Therefore, the total space complexity is equal to O(N^2).
+
+Topological Sort:
+We start by calculating the inDegree of each node, which tells us how many nodes it depends on.
+Nodes with an inDegree of zero are independent and can be processed first, so we enqueue them. Then, using a queue, we dequeue nodes, process their neighbors, update the prerequisite lists,
+and enqueue any neighbors whose inDegree drops to zero. This continues until we’ve processed all nodes, ensuring the correct order of traversal.
+Complexity Analysis:
+Let N be the number of courses (numCourses) and let Q be the size of the queries list. In the worst case, the size of the prerequisites list can grow up to
+N⋅(N−1)/2, when every course is a prerequisite for every other course, forming a complete directed graph.
+
+Time complexity: O(N^3+Q).
+Creating the adjacency list adjList takes O(N^2) time as we need to iterate over the list prerequisites. The array inDegree
+will be of size O(N). In Kahn's algorithm, we iterate over each node and edge of the vertex which is O(N^2) and for each edge traversed we will also add the prerequisites to the next node which is another O(N).
+To answer each query we need constant time to retrieve from the map and hence it's O(Q) to answer all queries.
+Hence, the total time complexity equals O(N^3+Q).
+Space complexity: O(N^2)
+List adjList takes O(N^2) as it will store every edge in the list prerequisites. Array inDegree will take O(N) space and
+the queue for Kahn's algorithm will also be O(N) size. Map nodePrerequisites will be from the node to its prerequisites and thus the total number of entries can be equal to O(N^2). Hence, the total space complexity equals O(N^2).
  */
