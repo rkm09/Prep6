@@ -1,9 +1,6 @@
 package daily.medium;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CourseScheduleIII1462 {
     public static void main(String[] args) {
@@ -22,7 +19,7 @@ public class CourseScheduleIII1462 {
                     .add(edge[1]);
         }
         for(int[] query : queries) {
-//            reset the visited array for each dfs call
+//            reset the visited array for each dfs call, as every query is independent of previous outcome
             boolean[] visited = new boolean[numCourses];
             result.add(isPrerequisite(adjMap, visited, query[0], query[1]));
         }
@@ -41,6 +38,44 @@ public class CourseScheduleIII1462 {
             }
         }
         return answer;
+    }
+
+//    topological sort; time: O(N^3 + Q), space: O(N^2)  [faster]
+    public List<Boolean> checkIfPrerequisite1(int numCourses, int[][] prerequisites, int[][] queries) {
+        Map<Integer, List<Integer>> adjMap = new HashMap<>();
+        int[] inDegree = new int[numCourses];
+        for(int[] edge : prerequisites) {
+            adjMap.computeIfAbsent(edge[0], k -> new ArrayList<>())
+                    .add(edge[1]);
+            inDegree[edge[1]]++;
+        }
+        Deque<Integer> queue = new ArrayDeque<>();
+        for(int i = 0 ; i < numCourses ; i++) {
+            if(inDegree[i] == 0)
+                queue.offer(i);
+        }
+        List<Boolean> result = new ArrayList<>();
+        Map<Integer, Set<Integer>> nodePrerequisites = new HashMap<>();
+        while(!queue.isEmpty()) {
+            int node = queue.poll();
+            for(int adj : adjMap.getOrDefault(node, new ArrayList<>())) {
+//                note: we need to store/save new hashset as default if not present, and hence we use computeIfAbsent instead of getOrDefault
+                nodePrerequisites.computeIfAbsent(adj, k -> new HashSet<>())
+                        .add(node);
+//                add all transitive dependencies as well
+                for(int pre : nodePrerequisites.getOrDefault(node, new HashSet<>())) {
+                    nodePrerequisites.get(adj).add(pre);
+                }
+                inDegree[adj]--;
+                if(inDegree[adj] == 0)
+                    queue.offer(adj);
+            }
+        }
+        for(int[] query : queries) {
+            result.add(nodePrerequisites.getOrDefault(query[1], new HashSet<>())
+                    .contains(query[0]));
+        }
+        return result;
     }
 }
 
