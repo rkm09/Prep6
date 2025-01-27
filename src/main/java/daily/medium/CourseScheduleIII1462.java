@@ -7,7 +7,7 @@ public class CourseScheduleIII1462 {
         CourseScheduleIII1462 c = new CourseScheduleIII1462();
         int[][] prerequisites = {{0,1}};
         int[][] queries = {{0,1},{1,0}};
-        System.out.println(c.checkIfPrerequisite(2, prerequisites, queries));
+        System.out.println(c.checkIfPrerequisite1(2, prerequisites, queries));
     }
 
 //    dfs; time: O(Q.N^2); space: O(N^2)
