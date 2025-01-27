@@ -21,10 +21,10 @@ public class CourseScheduleIII1462 {
             adjMap.computeIfAbsent(edge[0], k -> new ArrayList<>())
                     .add(edge[1]);
         }
-        for(int i = 0 ; i < queries.length ; i++) {
+        for(int[] query : queries) {
 //            reset the visited array for each dfs call
             boolean[] visited = new boolean[numCourses];
-            result.add(isPrerequisite(adjMap, visited, queries[i][0], queries[i][1]));
+            result.add(isPrerequisite(adjMap, visited, query[0], query[1]));
         }
         return result;
     }
