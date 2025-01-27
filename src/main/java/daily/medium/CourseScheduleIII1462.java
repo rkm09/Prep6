@@ -77,6 +77,28 @@ public class CourseScheduleIII1462 {
         }
         return result;
     }
+
+//    floyd warshall; time: O(N^3 + Q), space: O(N^2)
+    public List<Boolean> checkIfPrerequisite2(int numCourses, int[][] prerequisites, int[][] queries) {
+        boolean[][] isPrerequisite = new boolean[numCourses][numCourses];
+        for(int[] edge : prerequisites) {
+            isPrerequisite[edge[0]][edge[1]] = true;
+        }
+        for(int intermediate = 0 ; intermediate < numCourses ; intermediate++) {
+            for(int src = 0 ; src < numCourses ; src++) {
+                for(int target = 0 ; target < numCourses ; target++) {
+//                    if there is a path i -> intermediate and intermediate -> j, then i -> j exists as well
+                    isPrerequisite[src][target] = isPrerequisite[src][target]
+                            || isPrerequisite[src][intermediate] && isPrerequisite[intermediate][target];
+                }
+            }
+        }
+        List<Boolean> result = new ArrayList<>();
+        for(int[] query : queries) {
+            result.add(isPrerequisite[query[0]][query[1]]);
+        }
+        return result;
+    }
 }
 
 
@@ -137,7 +159,6 @@ and enqueue any neighbors whose inDegree drops to zero. This continues until we�
 Complexity Analysis:
 Let N be the number of courses (numCourses) and let Q be the size of the queries list. In the worst case, the size of the prerequisites list can grow up to
 N⋅(N−1)/2, when every course is a prerequisite for every other course, forming a complete directed graph.
-
 Time complexity: O(N^3+Q).
 Creating the adjacency list adjList takes O(N^2) time as we need to iterate over the list prerequisites. The array inDegree
 will be of size O(N). In Kahn's algorithm, we iterate over each node and edge of the vertex which is O(N^2) and for each edge traversed we will also add the prerequisites to the next node which is another O(N).
@@ -146,4 +167,10 @@ Hence, the total time complexity equals O(N^3+Q).
 Space complexity: O(N^2)
 List adjList takes O(N^2) as it will store every edge in the list prerequisites. Array inDegree will take O(N) space and
 the queue for Kahn's algorithm will also be O(N) size. Map nodePrerequisites will be from the node to its prerequisites and thus the total number of entries can be equal to O(N^2). Hence, the total space complexity equals O(N^2).
+
+Floyd Warshall:
+In the first approach, we discussed the concept of transitive closure, which simplified the problem. The key insight was that the transitive closure allows us to determine if a path exists between two nodes, even indirectly. This concept is central to solving the All-Pairs Shortest Path (APSP) problem, for which the Floyd-Warshall algorithm is commonly used. This algorithm works by systematically considering every possible intermediate node and checking if a path between two nodes can be improved by going through that intermediate node. It then updates the shortest distance between the nodes.
+For our problem, however, we don't need to calculate the shortest path, just whether a path exists. This leads us to a simple modification of the Floyd-Warshall algorithm: instead of keeping track of distances, we’ll use boolean values to represent whether a path exists between two nodes.
+The main idea is to check if there’s a path from src to target by looking at all possible intermediate nodes. For each intermediate node, we check if there’s a path from src to that node and a path from that node to target. If both conditions hold, then we can confirm that a path exists between src and target. We then set isPrerequisite[src][target] to true.
+At the end of this process, we’ll have a 2D array, isPrerequisite, where each entry isPrerequisite[u][v] tells us whether u is a prerequisite for v.
  */
