@@ -1,5 +1,8 @@
 package daily.medium;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 public class MaxFish2658 {
     public static void main(String[] args) {
         MaxFish2658 m = new MaxFish2658();
@@ -27,9 +30,7 @@ public class MaxFish2658 {
 
     private int calculateFishCount(int[][] grid, boolean[][] visited, int row, int col) {
 //        check boundary conditions, land cells or already visited cells
-        if(row < 0 || row >= grid.length || col < 0
-                || col >= grid[0].length || visited[row][col] || grid[row][col] == 0)
-            return 0;
+        if(!isValidCell(grid, visited, row, col)) return 0;
 //        mark the current cell as visited
         visited[row][col] = true;
 //        accumulate fish count from the current cell and its neighbours
@@ -37,6 +38,53 @@ public class MaxFish2658 {
                 + calculateFishCount(grid, visited, row, col + 1)
                 + calculateFishCount(grid, visited, row - 1, col)
                 + calculateFishCount(grid, visited, row, col - 1);
+    }
+
+    private boolean isValidCell(int[][] grid, boolean[][] visited, int row, int col) {
+        return row >= 0 && row < grid.length && col >= 0 && col < grid[0].length
+                && grid[row][col] != 0 && !visited[row][col];
+    }
+
+//    bfs; time: O(m.n), space: O(m.n)
+    public int findMaxFish1(int[][] grid) {
+        int rows = grid.length, cols = grid[0].length;
+        boolean[][] visited = new boolean[rows][cols];
+        int maxFishCount = 0;
+        for(int row = 0 ; row < rows ; row++) {
+            for(int col = 0 ; col < cols ; col++) {
+                if(!visited[row][col] && grid[row][col] != 0) {
+                    maxFishCount = Math.max(maxFishCount, calculateFishCountBfs(grid, visited, row, col));
+                }
+            }
+        }
+        return maxFishCount;
+    }
+
+    private int calculateFishCountBfs(int[][] grid, boolean[][] visited, int row, int col) {
+        int fishCount = 0;
+        Deque<int[]> queue = new ArrayDeque<>();
+        queue.offer(new int[]{row, col});
+        visited[row][col] = true;
+//        directions for exploring down, up, right, left
+        int[] rowDirections = {1,-1,0,0};
+        int[] colDirections = {0,0,1,-1};
+//        bfs traversal
+        while(!queue.isEmpty()) {
+            int[] cell = queue.poll();
+            row = cell[0]; col = cell[1];
+            fishCount += grid[row][col];
+//            explore all four directions
+            for(int dir = 0 ; dir < 4 ; dir++) {
+                int newRow = row + rowDirections[dir];
+                int newCol = col + colDirections[dir];
+                if(isValidCell(grid, visited, newRow, newCol)) {
+                    queue.offer(new int[]{newRow, newCol});
+//                    mark this one as visited, so it is not a TLE
+                    visited[newRow][newCol] = true;
+                }
+            }
+        }
+        return fishCount;
     }
 }
 
