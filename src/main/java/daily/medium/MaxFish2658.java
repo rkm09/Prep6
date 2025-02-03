@@ -7,7 +7,10 @@ public class MaxFish2658 {
     public static void main(String[] args) {
         MaxFish2658 m = new MaxFish2658();
         int[][] grid = {{0,2,1,0},{4,0,0,3},{1,0,0,4},{0,3,2,0}};
-        System.out.println(m.findMaxFish(grid));
+        int[][] grid1 = {{1,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,1}};
+        int[][] grid2 = {{1,6,10}};
+        int [][] grid3 = {{0,8,10},{2,8,0}};
+        System.out.println(m.findMaxFish1(grid));
     }
 
 //    dfs; time: O(m.n), space: O(m.n)
@@ -85,6 +88,81 @@ public class MaxFish2658 {
             }
         }
         return fishCount;
+    }
+
+//    disjoint set union; time: O(m.n), space: O(m.n)
+//    may need rework
+    public int findMaxFish2(int[][] grid) {
+        int rows = grid.length, cols = grid[0].length;
+        UnionFind uf = new UnionFind(grid);
+        int[] rowDirections = {1,-1,0,0};
+        int[] colDirections = {0,0,1,-1};
+        for(int row = 0 ; row < rows ; row++) {
+            for(int col = 0 ; col < cols ; col++) {
+                if(grid[row][col] != 0) {
+                    for(int dir = 0 ; dir < 4 ; dir++) {
+                        int newRow = row + rowDirections[dir];
+                        int newCol = col + colDirections[dir];
+                        if(newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && grid[newRow][newCol] != 0) {
+                            uf.union(row * cols + col, newRow * cols + newCol);
+                        }
+                    }
+
+                }
+            }
+        }
+        return uf.getMaxFishCount();
+    }
+
+    class UnionFind {
+        private int[] parent;
+        private int[] rank;
+        private int[] fishCount;
+        int maxFishCount = 0;
+        UnionFind(int[][] grid) {
+            int m = grid.length;
+            int n = grid[0].length;
+            parent = new int[m * n];
+            rank = new int[m * n];
+            fishCount = new int[m * n];
+            for(int r = 0 ; r < m ; r++) {
+                for(int c = 0 ; c < n ; c++) {
+                    if(grid[r][c] != 0) {
+                        parent[r * n + c] = r * n + c;
+                        fishCount[r * n + c] = grid[r][c];
+                        maxFishCount = Math.max(maxFishCount, fishCount[r * n + c]);
+                    }
+                }
+            }
+        }
+        private int find(int i) {
+            if(parent[i] != i)
+                parent[i] = find(parent[i]);
+            return parent[i];
+        }
+        private void union(int x, int y) {
+            int rootX = find(x);
+            int rootY = find(y);
+            if(rootX != rootY) {
+                if(rank[rootX] > rank[rootY]) {
+                    parent[rootY] = rootX;
+                }
+                else if(rank[rootX] < rank[rootY]) {
+                    parent[rootX] = parent[rootY];
+                } else {
+                    parent[rootY] = rootX;
+                    rank[rootX]++;
+                }
+            }
+
+            fishCount[x] += fishCount[y];
+            fishCount[y] = 0;
+            maxFishCount = Math.max(maxFishCount, fishCount[x]);
+        }
+
+        private int getMaxFishCount() {
+            return maxFishCount;
+        }
     }
 }
 
