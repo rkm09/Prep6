@@ -13,7 +13,7 @@ public class MaxFish2658 {
         System.out.println(m.findMaxFish1(grid));
     }
 
-//    dfs; time: O(m.n), space: O(m.n)
+//    dfs; time: O(m.n), space: O(m.n) [fastest]
     public int findMaxFish(int[][] grid) {
         int rows = grid.length, cols = grid[0].length;
 //        a 2d array to keep track of unvisited cells
@@ -107,7 +107,6 @@ public class MaxFish2658 {
                             uf.union(row * cols + col, newRow * cols + newCol);
                         }
                     }
-
                 }
             }
         }
@@ -116,21 +115,24 @@ public class MaxFish2658 {
 
     class UnionFind {
         private int[] parent;
-        private int[] rank;
-        private int[] fishCount;
-        int maxFishCount = 0;
+        private int[] componentSize;
+        private int[] totalFishCount;
+        int maxFishCount = 0, totalCells = 0;
         UnionFind(int[][] grid) {
             int m = grid.length;
             int n = grid[0].length;
-            parent = new int[m * n];
-            rank = new int[m * n];
-            fishCount = new int[m * n];
+            totalCells = m * n;
+            parent = new int[totalCells];
+            componentSize = new int[totalCells];
+            totalFishCount = new int[totalCells];
             for(int r = 0 ; r < m ; r++) {
                 for(int c = 0 ; c < n ; c++) {
                     if(grid[r][c] != 0) {
-                        parent[r * n + c] = r * n + c;
-                        fishCount[r * n + c] = grid[r][c];
-                        maxFishCount = Math.max(maxFishCount, fishCount[r * n + c]);
+                        int cellIndex = r * n + c;
+                        parent[cellIndex] = cellIndex;
+                        totalFishCount[cellIndex] = grid[r][c];
+                        componentSize[cellIndex] = 1;
+                        maxFishCount = Math.max(maxFishCount, totalFishCount[cellIndex]);
                     }
                 }
             }
@@ -144,23 +146,24 @@ public class MaxFish2658 {
             int rootX = find(x);
             int rootY = find(y);
             if(rootX != rootY) {
-                if(rank[rootX] > rank[rootY]) {
-                    parent[rootY] = rootX;
+//                union by size to optimize on tree height
+                if(componentSize[rootX] < componentSize[rootY]) {
+                    int temp = rootY;
+                    rootY = rootX;
+                    rootX = temp;
                 }
-                else if(rank[rootX] < rank[rootY]) {
-                    parent[rootX] = parent[rootY];
-                } else {
-                    parent[rootY] = rootX;
-                    rank[rootX]++;
-                }
+                parent[rootY] = rootX;
+                componentSize[rootX] += componentSize[rootY];
+                totalFishCount[rootX] += totalFishCount[rootY];
             }
-
-            fishCount[x] += fishCount[y];
-            fishCount[y] = 0;
-            maxFishCount = Math.max(maxFishCount, fishCount[x]);
         }
 
         private int getMaxFishCount() {
+            for(int cellIndex = 0 ; cellIndex < totalCells ; cellIndex++) {
+                if(find(cellIndex) == cellIndex) {
+                    maxFishCount = Math.max(maxFishCount, totalFishCount[cellIndex]);
+                }
+            }
             return maxFishCount;
         }
     }
