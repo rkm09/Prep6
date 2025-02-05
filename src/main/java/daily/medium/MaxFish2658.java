@@ -45,7 +45,7 @@ public class MaxFish2658 {
 
     private boolean isValidCell(int[][] grid, boolean[][] visited, int row, int col) {
         return row >= 0 && row < grid.length && col >= 0 && col < grid[0].length
-                && grid[row][col] != 0 && !visited[row][col];
+                && grid[row][col] > 0 && !visited[row][col];
     }
 
 //    bfs; time: O(m.n), space: O(m.n)
@@ -55,7 +55,7 @@ public class MaxFish2658 {
         int maxFishCount = 0;
         for(int row = 0 ; row < rows ; row++) {
             for(int col = 0 ; col < cols ; col++) {
-                if(!visited[row][col] && grid[row][col] != 0) {
+                if(!visited[row][col] && grid[row][col] > 0) {
                     maxFishCount = Math.max(maxFishCount, calculateFishCountBfs(grid, visited, row, col));
                 }
             }
@@ -103,7 +103,7 @@ public class MaxFish2658 {
                     for(int dir = 0 ; dir < 4 ; dir++) {
                         int newRow = row + rowDirections[dir];
                         int newCol = col + colDirections[dir];
-                        if(newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && grid[newRow][newCol] != 0) {
+                        if(newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && grid[newRow][newCol] > 0) {
                             uf.union(row * cols + col, newRow * cols + newCol);
                         }
                     }
@@ -127,7 +127,7 @@ public class MaxFish2658 {
             totalFishCount = new int[totalCells];
             for(int r = 0 ; r < m ; r++) {
                 for(int c = 0 ; c < n ; c++) {
-                    if(grid[r][c] != 0) {
+                    if(grid[r][c] > 0) {
                         int cellIndex = r * n + c;
                         parent[cellIndex] = cellIndex;
                         totalFishCount[cellIndex] = grid[r][c];
@@ -160,6 +160,7 @@ public class MaxFish2658 {
 
         private int getMaxFishCount() {
             for(int cellIndex = 0 ; cellIndex < totalCells ; cellIndex++) {
+//                if cellIndex is a root
                 if(find(cellIndex) == cellIndex) {
                     maxFishCount = Math.max(maxFishCount, totalFishCount[cellIndex]);
                 }
