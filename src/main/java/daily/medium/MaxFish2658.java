@@ -10,7 +10,7 @@ public class MaxFish2658 {
         int[][] grid1 = {{1,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,1}};
         int[][] grid2 = {{1,6,10}};
         int [][] grid3 = {{0,8,10},{2,8,0}};
-        System.out.println(m.findMaxFish1(grid));
+        System.out.println(m.findMaxFish2(grid));
     }
 
 //    dfs; time: O(m.n), space: O(m.n) [fastest]
@@ -99,7 +99,7 @@ public class MaxFish2658 {
         int[] colDirections = {0,0,1,-1};
         for(int row = 0 ; row < rows ; row++) {
             for(int col = 0 ; col < cols ; col++) {
-                if(grid[row][col] != 0) {
+                if(grid[row][col] > 0) {
                     for(int dir = 0 ; dir < 4 ; dir++) {
                         int newRow = row + rowDirections[dir];
                         int newCol = col + colDirections[dir];
