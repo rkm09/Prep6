@@ -1,5 +1,9 @@
 package daily.medium;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeSet;
+
 public class NumberContainer2349 {
     public static void main(String[] args) {
 
@@ -7,17 +11,26 @@ public class NumberContainer2349 {
 }
 
 class NumberContainers {
+    Map<Integer, Integer> indexToValue;
+    Map<Integer, TreeSet<Integer>> valueToIndex;
 
     public NumberContainers() {
-
+        indexToValue = new HashMap<>();
+        valueToIndex = new HashMap<>();
     }
 
     public void change(int index, int number) {
-
+        int val = indexToValue.getOrDefault(index, -1);
+        indexToValue.put(index, number);
+        if(valueToIndex.containsKey(val)) {
+            valueToIndex.get(val).remove(index);
+            if(valueToIndex.get(val).size() == 0) valueToIndex.remove(val);
+        }
+        valueToIndex.computeIfAbsent(number, k->new TreeSet<>()).add(index);
     }
 
     public int find(int number) {
-        return 0;
+        return valueToIndex.containsKey(number) ? valueToIndex.get(number).first() : -1;
     }
 }
 
