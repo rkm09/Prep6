@@ -2,6 +2,7 @@ package daily.medium;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.TreeSet;
 
 public class NumberContainer2349 {
@@ -10,27 +11,62 @@ public class NumberContainer2349 {
     }
 }
 
+// two hashmap + tree set; time: O(logn), space: O(n)
 class NumberContainers {
     Map<Integer, Integer> indexToValue;
-    Map<Integer, TreeSet<Integer>> valueToIndex;
+    Map<Integer, TreeSet<Integer>> valueToIndices;
 
     public NumberContainers() {
         indexToValue = new HashMap<>();
-        valueToIndex = new HashMap<>();
+        valueToIndices = new HashMap<>();
     }
 
     public void change(int index, int number) {
         int val = indexToValue.getOrDefault(index, -1);
         indexToValue.put(index, number);
-        if(valueToIndex.containsKey(val)) {
-            valueToIndex.get(val).remove(index);
-            if(valueToIndex.get(val).size() == 0) valueToIndex.remove(val);
+        if(valueToIndices.containsKey(val)) {
+            valueToIndices.get(val).remove(index);
+            if(valueToIndices.get(val).size() == 0) valueToIndices.remove(val);
         }
-        valueToIndex.computeIfAbsent(number, k->new TreeSet<>()).add(index);
+        valueToIndices.computeIfAbsent(number, k->new TreeSet<>()).add(index);
     }
 
     public int find(int number) {
-        return valueToIndex.containsKey(number) ? valueToIndex.get(number).first() : -1;
+        return valueToIndices.containsKey(number) ? valueToIndices.get(number).first() : -1;
+    }
+}
+
+// two hashmaps + priority queue; time: O(logn), space: O(n)
+class NumberContainers1 {
+    Map<Integer, Integer> indexToValue;
+    Map<Integer, PriorityQueue<Integer>> valueToIndices;
+
+    public NumberContainers1() {
+        indexToValue = new HashMap<>();
+        valueToIndices = new HashMap<>();
+    }
+
+    public void change(int index, int number) {
+        indexToValue.put(index, number);
+        valueToIndices.computeIfAbsent(number, k -> new PriorityQueue<>()).offer(index);
+    }
+
+    public int find(int number) {
+//        if number doesn't exist
+        if(!valueToIndices.containsKey(number))
+            return -1;
+//        get min heap of this number
+        PriorityQueue<Integer> minHeap = valueToIndices.get(number);
+        while(!minHeap.isEmpty()) {
+            int index = minHeap.peek();
+//            if index still maps to the target number, then return it
+            if(indexToValue.get(index) == number) {
+                return index;
+            }
+//            else remove stale index
+            minHeap.poll();
+        }
+        return -1;
     }
 }
 
