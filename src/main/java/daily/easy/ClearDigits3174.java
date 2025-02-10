@@ -9,8 +9,20 @@ public class ClearDigits3174 {
         System.out.println(clearDigits(s));
     }
 
-//    def; stack; time: O(n), space: O(n)
+//    stack like using sb alone; time: O(n), space: O(n) [string builder space]
     public static String clearDigits(String s) {
+        StringBuilder res = new StringBuilder();
+        for(char c : s.toCharArray()) {
+            if(Character.isDigit(c))
+                res.setLength(res.length() - 1);
+            else
+                res.append(c);
+        }
+        return res.toString();
+    }
+
+//    def; stack + sb; time: O(n), space: O(n)
+    public static String clearDigits1(String s) {
         Deque<Character> stack = new ArrayDeque<>();
         for(char c : s.toCharArray()) {
             if(Character.isDigit(c))
