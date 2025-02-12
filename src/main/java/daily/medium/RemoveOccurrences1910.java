@@ -1,5 +1,8 @@
 package daily.medium;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 public class RemoveOccurrences1910 {
     public static void main(String[] args) {
         String s = "daabcbaabcbc";
@@ -7,8 +10,37 @@ public class RemoveOccurrences1910 {
         System.out.println(removeOccurrences(s,part));
     }
 
-//    using inbuilt; time: O(n^2/m), space: O(n)
+//  stack; time: O(n.m), space: O(n)
     public  static String removeOccurrences(String s, String part) {
+        Deque<Character> stack = new ArrayDeque<>();
+        int partLength = part.length();
+        for(char c : s.toCharArray()) {
+            stack.push(c);
+            if(stack.size() >= partLength && checkString(stack, part, partLength)) {
+                for(int i = 0 ; i < partLength ; i++) {
+                    stack.pop();
+                }
+            }
+        }
+        StringBuilder res = new StringBuilder();
+        while(!stack.isEmpty())
+            res.append(stack.pop());
+        return res.reverse().toString();
+    }
+
+    private static boolean checkString(Deque<Character> stack, String part, int partLength) {
+        Deque<Character> temp = new ArrayDeque<>(stack);
+        for(int partIndex = partLength - 1; partIndex >= 0 ; partIndex--) {
+            if(temp.isEmpty() ||  temp.peek() != part.charAt(partIndex)) {
+                return false;
+            }
+            temp.poll();
+        }
+        return true;
+    }
+
+//    using inbuilt; time: O(n^2/m), space: O(n)
+    public  static String removeOccurrences1(String s, String part) {
         while(s.contains(part)) {
             int partIndex = s.indexOf(part);
             s = s.substring(0, partIndex) + s.substring(partIndex + part.length());
