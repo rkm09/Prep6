@@ -1,16 +1,42 @@
 package daily.medium;
 
+import common.Pair;
+
 import java.util.*;
 
 public class MaxSum2342 {
     public static void main(String[] args) {
         int[] nums = {18,43,36,13,7};
         int[] nums1 = {368,369,307,304,384,138,90,279,35,396,114,328,251,364,300,191,438,467,183};
-        System.out.println(maximumSum(nums1));
+        System.out.println(maximumSum(nums));
     }
 
-//    def; map;
+//    priority queue (minheap); time: O(nlogm), space: O(n) [m - maximum number in nums]  [fastest]
     public static int maximumSum(int[] nums) {
+        PriorityQueue<Integer>[] digitSumGroups = new PriorityQueue[82];
+//        note: don't by mistake use Arrays.fill here, as it will just assign a reference to one PQ which has been specified as the chosen value
+        for(int i = 0 ; i < 82 ; i++)
+            digitSumGroups[i] = new PriorityQueue<>();
+        for(int num : nums) {
+            int digitSum = calculateDigitSum(num);
+            digitSumGroups[digitSum].offer(num);
+            if(digitSumGroups[digitSum].size() > 2) {
+                digitSumGroups[digitSum].poll();
+            }
+        }
+        int maxSum = -1;
+        for(PriorityQueue<Integer> minHeap : digitSumGroups) {
+            if(minHeap.size() == 2) {
+                int first = minHeap.poll();
+                int second = minHeap.poll();
+                maxSum = Math.max(maxSum, first + second);
+            }
+        }
+        return maxSum;
+    }
+
+    //    def; map; [fast]
+    public static int maximumSum2(int[] nums) {
         Map<Integer, List<Integer>> map = new HashMap<>();
         for(int num : nums) {
             int curr = num, sum = 0;
@@ -31,6 +57,36 @@ public class MaxSum2342 {
         }
         return maxSum;
     }
+
+//    sorting; time: O(nlogn), space: O(n)
+    public static int maximumSum1(int[] nums) {
+        int n = nums.length;
+        Pair<Integer, Integer>[] digitSumPairs = new Pair[n];
+        for(int i = 0 ; i < n ; i++) {
+            digitSumPairs[i] = new Pair<>(calculateDigitSum(nums[i]), nums[i]);
+        }
+        Arrays.sort(digitSumPairs, Comparator.comparing(Pair<Integer,Integer>::getKey)
+                .thenComparing(Pair::getValue));
+        int maxSum = -1;
+        for(int i = 1 ; i < n ; i++) {
+            int prevSum = digitSumPairs[i].getKey();
+            int currSum = digitSumPairs[i - 1].getKey();
+            if(prevSum == currSum) {
+                maxSum = Math.max(maxSum, digitSumPairs[i].getValue() + digitSumPairs[i - 1].getValue());
+            }
+        }
+        return maxSum;
+    }
+
+    private static int calculateDigitSum(int num) {
+        int digitSum = 0;
+        while(num != 0) {
+            digitSum += num % 10;
+            num /= 10;
+        }
+        return digitSum;
+    }
+
 }
 
 /*
