@@ -7,10 +7,41 @@ public class ProductOfNumbers1352 {
 
 }
 
+// prefix product; time: O(n), space: O(n) [time : O(n) for n such operations]
 class ProductOfNumbers {
     int size;
-    List<Integer> li;
+    List<Integer> prefixProduct;
     public ProductOfNumbers() {
+        prefixProduct = new ArrayList<>();
+        prefixProduct.add(1);
+        size = 0;
+    }
+
+//    time: O(1)
+    public void add(int num) {
+        if(num == 0) {
+//            if num is zero, reset cumulative product
+            prefixProduct = new ArrayList<>();
+            prefixProduct.add(1);
+            size = 0;
+        } else {
+            prefixProduct.add(prefixProduct.get(size) * num);
+            size++;
+        }
+    }
+
+//    time: O(1)
+    public int getProduct(int k) {
+        if(k > size) return 0;
+        return (prefixProduct.get(size)) / (prefixProduct.get(size - k));
+    }
+}
+
+// def;
+class ProductOfNumbers1 {
+    int size;
+    List<Integer> li;
+    public ProductOfNumbers1() {
         li = new ArrayList<>();
     }
 
