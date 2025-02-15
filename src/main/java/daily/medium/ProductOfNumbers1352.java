@@ -20,7 +20,7 @@ class ProductOfNumbers {
 //    time: O(1)
     public void add(int num) {
         if(num == 0) {
-//            if num is zero, reset cumulative product
+//            if num is zero, reset cumulative product; also note that List.of(1) cannot be used here, as that would make it immutable
             prefixProduct = new ArrayList<>();
             prefixProduct.add(1);
             size = 0;

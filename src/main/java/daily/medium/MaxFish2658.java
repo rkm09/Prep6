@@ -91,7 +91,6 @@ public class MaxFish2658 {
     }
 
 //    disjoint set union; time: O(m.n), space: O(m.n)
-//    may need rework
     public int findMaxFish2(int[][] grid) {
         int rows = grid.length, cols = grid[0].length;
         UnionFind uf = new UnionFind(grid);
