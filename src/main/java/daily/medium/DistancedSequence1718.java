@@ -8,7 +8,7 @@ public class DistancedSequence1718 {
     }
 
     public static int[] constructDistancedSequence(int n) {
-
+        return null;
     }
 }
 
