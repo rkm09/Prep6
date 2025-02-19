@@ -9,7 +9,7 @@ public class HappyString1415 {
         System.out.println(getHappyString(1,3));
     }
 
-//    backtracking ; time: O(n.2^n), space: O(n)
+//    backtracking ; time: O(n.2^n), space: O(2^n)
     public static String getHappyString(int n, int k) {
         List<String> happyStringsList = new ArrayList<>();
 //        generate all the happy strings of length n
@@ -60,4 +60,15 @@ Explanation: There are 12 different happy string of length 3 ["aba", "abc", "aca
 Constraints:
 1 <= n <= 10
 1 <= k <= 100
+ */
+
+/*
+backtracking:
+Let n be the desired length of the happy strings.
+Time Complexity:O(n⋅2^n).
+In the backtracking, we explore 3 options for the first character of the string and 2 options for the next character at each of the following steps. This is similar to exploring all nodes in a binary tree withnlevels, resulting in a time complexity ofO(2
+n)for generating the strings. Then, we sort3⋅2^n−1=O(2^n)strings, which requires2^nlog2^n=O(n⋅2^n)time.
+Thus, the overall complexity is determined by the sorting of all happy strings and is equal toO(n⋅2^n).
+Space Complexity:O(2^n).
+We create an array to store all happy strings of lengthn, which will eventually hold 3⋅2^n−1=O(2^n)elements. Additionally, the recursion depth can grow up ton, adding anotherO(n)factor to the total space complexity. However, the amount of extra space used is dominated by the happyStrings array and remains equal toO(2^n).
  */
