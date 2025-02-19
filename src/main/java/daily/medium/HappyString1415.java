@@ -15,7 +15,7 @@ public class HappyString1415 {
 //        generate all the happy strings of length n
         generateHappyStrings(n, happyStringsList, "");
 //        sort in lexicographical order
-        Collections.sort(happyStringsList);
+//        Collections.sort(happyStringsList); seems unnecessary as we are filling it up sequentially
 //        check if there are at least k happy strings
         if(happyStringsList.size() < k) return "";
         return happyStringsList.get(k - 1);
