@@ -9,7 +9,7 @@ public class HappyString1415 {
         System.out.println(getHappyString(1,3));
     }
 
-//    recursion; time: O(n.2^n), space: O(n)
+//    backtracking ; time: O(n.2^n), space: O(n)
     public static String getHappyString(int n, int k) {
         List<String> happyStringsList = new ArrayList<>();
 //        generate all the happy strings of length n
