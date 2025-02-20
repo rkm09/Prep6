@@ -6,16 +6,16 @@ import java.util.List;
 
 public class HappyString1415 {
     public static void main(String[] args) {
-        System.out.println(getHappyString(1,3));
+        System.out.println(getHappyString(3,9));
     }
 
-//    backtracking ; time: O(n.2^n), space: O(2^n)
+//    backtracking ; time: O(2^n) [if we use sorting: O(n.2^n)], space: O(2^n)
     public static String getHappyString(int n, int k) {
         List<String> happyStringsList = new ArrayList<>();
 //        generate all the happy strings of length n
         generateHappyStrings(n, happyStringsList, "");
-//        sort in lexicographical order
-//        Collections.sort(happyStringsList); seems unnecessary as we are filling it up sequentially
+//        sort in lexicographical order: unnecessary as we are already filling it up alphabetically
+//        Collections.sort(happyStringsList);
 //        check if there are at least k happy strings
         if(happyStringsList.size() < k) return "";
         return happyStringsList.get(k - 1);
@@ -34,6 +34,41 @@ public class HappyString1415 {
                 continue;
 //            recursively generate the next character
             generateHappyStrings(n, happyStringsList, currentString + currentChar);
+        }
+    }
+
+//    optimized backtracking; time: O(2^n), space: O(n) [faster]
+    public static String getHappyString1(int n, int k) {
+        String[] result = new String[1];
+        int[] indexInSortedList = new int[1];
+        StringBuilder currentString = new StringBuilder();
+//        generate the happy strings and track the kth entry
+        generateHappyStrings1(n, k, indexInSortedList, currentString, result);
+        return result[0] == null ? "" : result[0];
+    }
+
+    private static void generateHappyStrings1(int n, int k, int[] indexInSortedList, StringBuilder currentString, String[] result) {
+//        if the current string has reached the desired length
+        if(currentString.length() == n) {
+            indexInSortedList[0]++;  // increment the count of generated strings
+//        if this is the kth string, store it in the result
+            if (indexInSortedList[0] == k) {
+                result[0] = currentString.toString();
+            }
+            return;
+        }
+//        try adding each character to the current string
+        for(char currentChar = 'a' ; currentChar <= 'c' ; currentChar++) {
+//            skip if the current string is same as the last one
+            if(currentString.length() > 0 &&  currentString.charAt(currentString.length() - 1) == currentChar)
+                continue;
+            currentString.append(currentChar);
+//            recursively generate the next character string
+            generateHappyStrings1(n, k, indexInSortedList, currentString, result);
+//            if the result is found, stop further processing
+            if(result[0] != null) return;
+//            backtrack by removing the last character
+            currentString.deleteCharAt(currentString.length() - 1);
         }
     }
 }
@@ -71,4 +106,9 @@ n)for generating the strings. Then, we sort3⋅2^n−1=O(2^n)strings, which requ
 Thus, the overall complexity is determined by the sorting of all happy strings and is equal toO(n⋅2^n).
 Space Complexity:O(2^n).
 We create an array to store all happy strings of lengthn, which will eventually hold 3⋅2^n−1=O(2^n)elements. Additionally, the recursion depth can grow up ton, adding anotherO(n)factor to the total space complexity. However, the amount of extra space used is dominated by the happyStrings array and remains equal toO(2^n).
+Optimized backtracking:
+there's a key observation: the order in which we generate the strings is not random.
+Since we add characters in alphabetical order, we naturally explore all strings starting with 'a', before backtracking and moving to those starting with'b', and so on. This means the strings are generated directly in lexicographical order.
+Because of this, we don't need to store all the strings and sort them later. Instead, we can keep a counter - corresponding to the index of the current string in the sorted list - to track how many strings we've generated. When we reach the kth
+string, we store it as the result and stop the process, saving both time and space.
  */
