@@ -1,7 +1,8 @@
 package daily.medium;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
 
 public class HappyString1415 {
@@ -9,12 +10,12 @@ public class HappyString1415 {
         System.out.println(getHappyString(3,9));
     }
 
-//    backtracking ; time: O(2^n) [if we use sorting: O(n.2^n)], space: O(2^n)
+//    backtracking ; time: O(n.2^n) [if we use sorting: O(n.2^n)], space: O(2^n)
     public static String getHappyString(int n, int k) {
         List<String> happyStringsList = new ArrayList<>();
 //        generate all the happy strings of length n
         generateHappyStrings(n, happyStringsList, "");
-//        sort in lexicographical order: unnecessary as we are already filling it up alphabetically
+//        unnecessary to sort as we are already filling it up alphabetically
 //        Collections.sort(happyStringsList);
 //        check if there are at least k happy strings
         if(happyStringsList.size() < k) return "";
@@ -37,7 +38,7 @@ public class HappyString1415 {
         }
     }
 
-//    optimized backtracking; time: O(2^n), space: O(n) [faster]
+//    optimized backtracking; time: O(n.2^n), space: O(n) [fastest]
     public static String getHappyString1(int n, int k) {
         String[] result = new String[1];
         int[] indexInSortedList = new int[1];
@@ -70,6 +71,34 @@ public class HappyString1415 {
 //            backtrack by removing the last character
             currentString.deleteCharAt(currentString.length() - 1);
         }
+    }
+
+//    stack; time: O(n.2^n), space: O(n^2) [faster]
+    public static String getHappyString2(int n, int k) {
+        Deque<String> stack = new ArrayDeque<>();
+        int indexInSortedList = 0;
+//        start with an empty string
+        stack.push("");
+        while(!stack.isEmpty()) {
+            String currentString = stack.pop();
+//            if we have built a string of length n, count it
+            if(currentString.length() == n) {
+                indexInSortedList++;
+//                if we reach the kth happy string, return it
+                if(indexInSortedList == k)
+                    return currentString;
+                continue;
+            }
+//            expand the current string by adding characters 'a', 'b', 'c'
+//            ensure lexicographic order by pushing in reverse
+            for(char currentChar = 'c' ; currentChar >= 'a' ; currentChar--) {
+//                avoid consecutive identical characters
+                if(currentString.length() == 0 || currentChar != currentString.charAt(currentString.length() - 1)) {
+                    stack.push(currentString + currentChar);
+                }
+            }
+        }
+        return "";
     }
 }
 
@@ -111,4 +140,14 @@ there's a key observation: the order in which we generate the strings is not ran
 Since we add characters in alphabetical order, we naturally explore all strings starting with 'a', before backtracking and moving to those starting with'b', and so on. This means the strings are generated directly in lexicographical order.
 Because of this, we don't need to store all the strings and sort them later. Instead, we can keep a counter - corresponding to the index of the current string in the sorted list - to track how many strings we've generated. When we reach the kth
 string, we store it as the result and stop the process, saving both time and space.
+Time Complexity:O(k⋅n)orO(2^n).
+The algorithm generates happy strings in lexicographical order using backtracking and stops when the kth one is found.
+In the worst case, the algorithm generates min(k,3⋅2^n−1)strings before terminating. For each string, it performs n recursive calls (one for each character in the string) and each of them involves only constant-time operations such as checking if the current character is valid and updating the current string.
+Therefore, the total time complexity of the algorithm isO(k⋅n)orO(n⋅2^n)the number of strings generated isO(2^n).
+Space Complexity:O(n).
+Regarding additional space usage, we maintain a string currentString for backtracking, which can grow up to sizen. Since this string is passed by reference in the recursive function, no extra copies are created, keeping its space usage atO(n).
+Stack:
+Recursive solutions are often more intuitive for backtracking but can be inefficient due to uncontrolled stack growth. Each recursive call adds a new frame to the call stack, storing local variables and execution details, which can lead to excessive memory usage or even a stack overflow. To avoid this, we will use our own stack to simulate recursion, giving us greater control over memory usage and preventing unnecessary overhead.
+So, instead of making a new function call every time we extend the currentString, we store the next string to be processed (i.e.,currentString + currentChar) in a stack. Then, retrieving a string from the top of the stack is the same as entering the function call that would have this string ascurrentString. The logic from this point remains the same: we go over all valid characters and try to extend the current string by adding them to the end of it.
+However, it is important to note that the string at the top of the stack is the one that will be processed (or expanded) first. Therefore, we need to push, for example, the string"abca"onto the stack after"abcb"so that it is retrieved first, ensuring that the strings are generated in lexicographic order.
  */
