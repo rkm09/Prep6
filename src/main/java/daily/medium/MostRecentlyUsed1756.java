@@ -1,6 +1,7 @@
 package daily.medium;
 
-import java.beans.PropertyEditorManager;
+import common.ListNode;
+
 import java.util.*;
 
 public class MostRecentlyUsed1756 {
@@ -27,6 +28,40 @@ class MRUQueue {
         return val;
     }
 }
+
+// linked list; time: O(n), space: O(n)
+class MRUQueue1 {
+
+    private ListNode head;
+    private ListNode tail;
+    public MRUQueue1(int n) {
+        head = new ListNode(0, null);
+        ListNode current = head;
+//        initialize linked list with values from 1 to n
+        for(int number = 1; number <= n ; number++) {
+            current.next = new ListNode(number);
+            current = current.next;
+        }
+        tail = current;
+    }
+
+    public int fetch(int k) {
+        ListNode current = head;
+//        traverse to the node before the kth node
+        for(int i = 1 ; i < k ; i++)
+            current = current.next;
+//        get the value of the kth node
+        int value = current.next.val;
+//        move the kth node to the end of the list
+        tail.next = current.next;
+        tail = tail.next;
+        current.next = tail.next;
+        tail.next = null;
+        return value;
+    }
+
+}
+
 
 /**
  * Your MRUQueue object will be instantiated and called as such:
@@ -58,4 +93,10 @@ Constraints:
 At most 2000 calls will be made to fetch.
 
 Follow up: Finding an O(n) algorithm per fetch is a bit easy. Can you find an algorithm with a better complexity for each fetch call?
+ */
+
+/*
+Linked list:
+To perform a fetch operation, we traverse the linked list to find thek-th node. Since linked lists do not provide direct access by index, this takesO(n)time in the worst case. Once we locate thek-th node, we update pointers to remove it from its current position and append it to the end, making sure to maintain the list's integrity. More specifically, to fetch, we go to the(k - 1)-th (previous) node, link node k to the tail, update the tail, and return the value.
+This avoids shifting elements like in an array, but traversal itself remains anO(n)operation. While better suited for frequent modifications, it still suffers from inefficiency in searching for elements.
  */
