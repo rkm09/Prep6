@@ -32,7 +32,7 @@ class MRUQueue {
 // linked list; time: O(n), space: O(n)
 class MRUQueue1 {
 
-    private ListNode head;
+    private final ListNode head;
     private ListNode tail;
     public MRUQueue1(int n) {
         head = new ListNode(0, null);

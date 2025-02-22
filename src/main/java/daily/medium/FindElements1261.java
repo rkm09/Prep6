@@ -2,6 +2,7 @@ package daily.medium;
 
 import common.TreeNode;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,20 +10,44 @@ import java.util.Set;
 public class FindElements1261 {
 }
 
+
+// dfs; time: O(n), space: O(n)
+// note that unlike def; since we are not changing values of the tree nodes, only passing around value
+// and updating set, at line 29, 30 it would be 2 * current value and not wrt node.val.
 class FindElements {
-    private Set<Integer> set;
+    private Set<Integer> seen;
     public FindElements(TreeNode root) {
+        seen = new HashSet<>();
+        dfs(root, 0);
+    }
+
+    public boolean find(int target) {
+        return seen.contains(target);
+    }
+
+    private void dfs(TreeNode node, int currentVal) {
+        if(node == null) return;
+        seen.add(currentVal);
+        dfs(node.left, 2 * currentVal + 1);
+        dfs(node.right, 2 * currentVal + 2);
+    }
+}
+
+// def; dfs; time: O(n), space: O(n) [dfs faster than bfs]
+class FindElements1 {
+    private final Set<Integer> seen;
+    public FindElements1(TreeNode root) {
         root.val = 0;
-        set = new HashSet<>();
+        seen = new HashSet<>();
         dfs(root);
     }
 
     public boolean find(int target) {
-        return set.contains(target);
+        return seen.contains(target);
     }
 
     private void dfs(TreeNode node) {
-        set.add(node.val);
+        seen.add(node.val);
         if(node.left != null) {
             node.left.val = 2 * node.val + 1;
             dfs(node.left);
@@ -30,6 +55,40 @@ class FindElements {
         if(node.right != null) {
             node.right.val = 2 * node.val + 2;
             dfs(node.right);
+        }
+    }
+}
+
+// bfs; time: O(n), space: O(n)
+class FindElements2 {
+
+    private final Set<Integer> seen;
+
+    public FindElements2(TreeNode root) {
+        seen = new HashSet<>();
+        root.val = 0;
+        bfs(root);
+    }
+
+    public boolean find(int target) {
+        return seen.contains(target);
+    }
+
+    private void bfs(TreeNode root) {
+        Deque<TreeNode> queue = new ArrayDeque<>();
+        root.val = 0;
+        queue.offer(root);
+        while(!queue.isEmpty()) {
+            TreeNode node = queue.poll();
+            seen.add(node.val);
+            if(node.left != null) {
+                node.left.val = 2 * node.val + 1;
+                queue.offer(node.left);
+            }
+            if(node.right != null) {
+                node.right.val = 2 * node.val + 2;
+                queue.offer(node.right);
+            }
         }
     }
 }
