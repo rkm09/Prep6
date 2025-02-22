@@ -3,17 +3,20 @@ package daily.hard;
 import common.TreeNode;
 
 public class RecoverFromPreOrder1028 {
+    private static int index;
     public static void main(String[] args) {
+        RecoverFromPreOrder1028 r = new RecoverFromPreOrder1028();
         String traversal = "1-2--3--4-5--6--7";
-        System.out.println(recoverFromPreorder(traversal).val);
+        System.out.println(r.recoverFromPreorder(traversal).val);
     }
 
 //    recursion; time: O(n), space: O(n)
-    public static TreeNode recoverFromPreorder(String traversal) {
-        return helper(traversal, 0, 0);
+    public TreeNode recoverFromPreorder(String traversal) {
+        index = 0;
+        return helper(traversal, 0);
     }
 
-    private static TreeNode helper(String traversal, int depth, int index) {
+    private TreeNode helper(String traversal, int depth) {
         if(index >= traversal.length()) return null;
 //        count the number of dashes
         int dashCount = 0;
@@ -30,8 +33,8 @@ public class RecoverFromPreOrder1028 {
 //        create the current node
         TreeNode node = new TreeNode(value);
 //        recursively build the left and the right subtree
-        node.left = helper(traversal, depth + 1, index);
-        node.right = helper(traversal, depth + 1, index);
+        node.left = helper(traversal, depth + 1);
+        node.right = helper(traversal, depth + 1);
 
         return node;
     }
