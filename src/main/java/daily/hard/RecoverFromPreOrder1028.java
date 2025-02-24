@@ -2,15 +2,21 @@ package daily.hard;
 
 import common.TreeNode;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 public class RecoverFromPreOrder1028 {
     private static int index;
     public static void main(String[] args) {
         RecoverFromPreOrder1028 r = new RecoverFromPreOrder1028();
         String traversal = "1-2--3--4-5--6--7";
+        //String traversal = "1-401--349---90--88";
         System.out.println(r.recoverFromPreorder(traversal).val);
     }
 
 //    recursion; time: O(n), space: O(n)
+//    could have also used int[] index and passed that around, if not using static [you technically should not need to initialize index at the method level, but some glitch in leetcode's editor and so..]
+//    index as an int being passed around, will not give the right result as it will keep reverting to previous stack state when the function returns, so recent modification to index will not persist
     public TreeNode recoverFromPreorder(String traversal) {
         index = 0;
         return helper(traversal, 0);
@@ -37,6 +43,11 @@ public class RecoverFromPreOrder1028 {
         node.right = helper(traversal, depth + 1);
 
         return node;
+    }
+
+//    stack; time: O(n), space: O(n)
+    public TreeNode recoverFromPreorder1(String traversal) {
+        return new TreeNode(0);
     }
 }
 
