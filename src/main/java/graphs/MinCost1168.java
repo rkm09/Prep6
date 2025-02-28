@@ -1,6 +1,5 @@
 package graphs;
 
-import daily.hard.MinCost1368;
 
 import java.util.*;
 
@@ -55,7 +54,7 @@ public class MinCost1168 {
         return totalCost;
     }
 
-//    kruskal's algo; Union find; time: O(N+M)log(M+N), space: O(M+N)
+//    kruskal's algo; Union find; time: O(N+M)log(M+N), space: O(M+N) [faster]
     public int minCostToSupplyWater(int n, int[] wells, int[][] pipes) {
         List<int[]> orderedEdges = new ArrayList<>();
 //        add the virtual vertex at index 0, along with the new edges
@@ -188,7 +187,7 @@ Furthermore, in Kruskal's algorithm, we consider all edges at once ranked by the
 In the example on the right, we should not add the new edge. Because it does not help us to make the current MST more connected, since all vertices are connected already.
 A more concise criteria to determine whether we should add a new edge in Kruskal's algorithm is that whether both ends of the edge belong to the same component (group).
 Time:
-If K operations, either Union or Find, are applied to L elements, the total run time is O(K⋅log∗L), where log∗is the iterated logarithm.
+If K operations, either Union or Find, are applied to L elements, the total run time is O(K⋅log∗L), where log∗ is the iterated logarithm.
 Let N be the number of houses, and M be the number of pipes from the input.
 
 Time Complexity: O((N+M)⋅log(N+M))
