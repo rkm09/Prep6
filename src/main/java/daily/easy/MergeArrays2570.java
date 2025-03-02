@@ -10,31 +10,33 @@ public class MergeArrays2570 {
         int[][] res = mergeArrays(nums1, nums2);
     }
 
-//    def; time: O(n), space: O(n)
+//    def; two pointer; time: O(m+n), space: O(m+n)
     public static int[][] mergeArrays(int[][] nums1, int[][] nums2) {
         int n1 = nums1.length, n2 = nums2.length;
-        int index1 = 0, index2 = 0;
+        int ptr1 = 0, ptr2 = 0;
         List<int[]> resList = new ArrayList<>();
-        while(index1 < n1 && index2 < n2) {
-            int id1 = nums1[index1][0];
-            int id2 = nums2[index2][0];
+        while(ptr1 < n1 && ptr2 < n2) {
+            int id1 = nums1[ptr1][0];
+            int id2 = nums2[ptr2][0];
             if(id1 == id2)
-                resList.add(new int[] {id1,nums1[index1++][1] + nums2[index2++][1]});
+                resList.add(new int[] {id1, nums1[ptr1++][1] + nums2[ptr2++][1]});
             else if(id1 < id2)
-                resList.add(new int[] {id1, nums1[index1++][1]});
+                resList.add(new int[] {id1, nums1[ptr1++][1]});
             else
-                resList.add(new int[] {id2, nums2[index2++][1]});
+                resList.add(new int[] {id2, nums2[ptr2++][1]});
         }
-        while(index1 < n1)
-            resList.add(new int[] {nums1[index1][0], nums1[index1++][1]});
-        while(index2 < n2)
-            resList.add(new int[] {nums2[index2][0], nums2[index2++][1]});
+//        handle any remaining pairs
+        while(ptr1 < n1)
+            resList.add(new int[] {nums1[ptr1][0], nums1[ptr1++][1]});
+        while(ptr2 < n2)
+            resList.add(new int[] {nums2[ptr2][0], nums2[ptr2++][1]});
+
         int[][] res = new int[resList.size()][2];
         int idx = 0;
         for(int[] num : resList) {
-            res[idx][0] = num[0];
-            res[idx++][1] = num[1];
+            res[idx++] = num;
         }
+
         return res;
     }
 }
