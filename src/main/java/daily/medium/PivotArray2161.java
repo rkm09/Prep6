@@ -9,8 +9,47 @@ public class PivotArray2161 {
         System.out.println(Arrays.toString(p.pivotArray(nums, 10)));
     }
 
+//    two pointer ; time: O(n), space: O(1)
     public int[] pivotArray(int[] nums, int pivot) {
-        //int pivotIdx = binSearch(nums, pivot);
+        int n = nums.length;
+        int lessIdx = 0, greaterIdx = n - 1;
+        int[] res = new int[n];
+        for(int i = 0, j = n - 1 ; i < n ; i++, j--) {
+            if(nums[i] < pivot)
+                res[lessIdx++] = nums[i];
+            if(nums[j] > pivot)
+                res[greaterIdx--] = nums[j];
+        }
+        while(lessIdx <= greaterIdx) {
+            res[lessIdx++] = pivot;
+        }
+        return res;
+    }
+
+//    two pass with fixed array; time: O(n), space: O(1)
+    public int[] pivotArray1(int[] nums, int pivot) {
+        int less = 0, equal = 0;
+        for(int num : nums) {
+            if(num < pivot) less++;
+            else if(num == pivot) equal++;
+        }
+        int lessIdx = 0;
+        int equalIdx = less;
+        int greaterIdx = less + equal;
+        int[] res = new int[nums.length];
+        for(int num : nums) {
+            if(num < pivot)
+                res[lessIdx++] = num;
+            else if(num == pivot)
+                res[equalIdx++] = num;
+            else
+                res[greaterIdx++] = num;
+        }
+        return res;
+    }
+
+//    def; time: O(n), space: O(n)
+    public int[] pivotArray2(int[] nums, int pivot) {
         int n = nums.length;
         int[] res = new int[n];
         int pivotCnt = 0;
@@ -34,19 +73,28 @@ public class PivotArray2161 {
         return res;
     }
 
-    private int binSearch(int[] nums, int pivot) {
-        int left = 0, right = nums.length - 1;
-        while(left <= right) {
-            int mid = left + (right - left) / 2;
-            if(nums[mid] == pivot)
-                return mid;
-            if(nums[mid] < pivot)
-                left = mid + 1;
+//    dynamic list; time: O(n), space: O(n)
+    public int[] pivotArray3(int[] nums, int pivot) {
+        List<Integer> less = new ArrayList<>();
+        List<Integer> equal = new ArrayList<>();
+        List<Integer> greater = new ArrayList<>();
+        for(int num : nums) {
+            if(num < pivot)
+                less.add(num);
+            else if(num == pivot)
+                equal.add(num);
             else
-                right = mid - 1;
+                greater.add(num);
         }
-        return -1;
+        less.addAll(equal);
+        less.addAll(greater);
+        int n = nums.length, idx = 0;
+        int[] res = new int[n];
+        for(int num : less)
+            res[idx++] = num;
+        return res;
     }
+
 }
 
 /*
