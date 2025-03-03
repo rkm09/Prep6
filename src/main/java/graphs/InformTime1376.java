@@ -43,6 +43,7 @@ public class InformTime1376 {
         for(int i = 0 ; i < n ; i++)
             if(manager[i] != -1)
                 adjList.get(manager[i]).add(i);
+//        note: could do it with pair also, instead of int[]
         Deque<int[]> queue = new ArrayDeque<>();
         queue.offer(new int[] {headID, 0});
         while(!queue.isEmpty()) {
