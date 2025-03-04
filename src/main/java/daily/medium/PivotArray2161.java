@@ -6,10 +6,12 @@ public class PivotArray2161 {
     public static void main(String[] args) {
         PivotArray2161 p = new PivotArray2161();
         int[] nums = {9,12,5,10,14,3,10};
-        System.out.println(Arrays.toString(p.pivotArray(nums, 10)));
+        int[] nums1 = {10,1,2,5,3,6,9,5};
+       // System.out.println(Arrays.toString(p.pivotArray(nums, 10)));
+        System.out.println(Arrays.toString(p.pivotArray(nums1, 5)));
     }
 
-//    two pointer ; time: O(n), space: O(1)
+//    two pointer ; time: O(n), space: O(1) [fastest]
     public int[] pivotArray(int[] nums, int pivot) {
         int n = nums.length;
         int lessIdx = 0, greaterIdx = n - 1;
@@ -26,7 +28,7 @@ public class PivotArray2161 {
         return res;
     }
 
-//    two pass with fixed array; time: O(n), space: O(1)
+//    two pass with fixed array; time: O(n), space: O(1) [faster]
     public int[] pivotArray1(int[] nums, int pivot) {
         int less = 0, equal = 0;
         for(int num : nums) {
