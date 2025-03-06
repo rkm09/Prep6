@@ -33,7 +33,7 @@ public class MinSwaps1150 {
 //    deque, sliding window; time: O(n), space: O(n)
     public static int minSwaps1(int[] data) {
         int ones = Arrays.stream(data).sum();
-        int maxOnes = 0, cntOnes = 0, n = data.length;
+        int maxOnes = 0, cntOnes = 0;
         Deque<Integer> queue = new ArrayDeque<>();
         for (int num : data) {
             queue.offer(num);
