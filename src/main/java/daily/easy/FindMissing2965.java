@@ -1,9 +1,6 @@
 package daily.easy;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class FindMissing2965 {
     public static void main(String[] args) {
@@ -12,8 +9,28 @@ public class FindMissing2965 {
         System.out.println(Arrays.toString(findMissingAndRepeatedValues(grid)));
     }
 
-//    def; time: O(nlogn), space: O(n)
+//    hashmap; time: O(n^2), space: O(n^2)
     public static int[] findMissingAndRepeatedValues(int[][] grid) {
+        int n = grid.length;
+        int missing = -1, repeat = -1;
+        Map<Integer, Integer> freqMap = new HashMap<>();
+        for(int[] row : grid) {
+            for(int num : row) {
+                freqMap.put(num, freqMap.getOrDefault(num, 0) + 1);
+            }
+        }
+        for(int num = 1 ; num <= n * n ; num++) {
+            if(!freqMap.containsKey(num))
+                missing = num;
+            else if(freqMap.get(num) == 2)
+                repeat = num;
+        }
+
+        return new int[] {repeat, missing};
+    }
+
+//    def; time: O(n^2logn^2), space: O(n^2)
+    public static int[] findMissingAndRepeatedValues1(int[][] grid) {
         List<Integer> numList = new ArrayList<>();
         int n = grid.length;
         for(int[] nums : grid) {
