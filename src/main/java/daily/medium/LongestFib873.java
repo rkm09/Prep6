@@ -69,7 +69,7 @@ public class LongestFib873 {
         return maxLength > 2 ? maxLength : 0;
     }
 
-//    Optimised DP; time: O(n^2), space: O(n^2)
+//    Optimised DP with two pointer; time: O(n^2), space: O(n^2)
     public static int lenLongestFibSubseq2(int[] arr) {
         int n = arr.length, maxLength = 0;
 //        dp[prev][curr] stores length of fibonacci sequences that end at prev, curr
