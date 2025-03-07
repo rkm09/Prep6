@@ -1,6 +1,8 @@
 package daily.medium;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class LongestFib873 {
@@ -35,6 +37,35 @@ public class LongestFib873 {
             }
         }
         return maxLength;
+    }
+
+//    dp; time: O(n^2), space: O(n^2)
+    public static int lenLongestFibSubseq1(int[] arr) {
+        int n = arr.length;
+//        dp[prev][curr] stores length of fibonacci sequence ending at indices prev, curr
+        int[][] dp = new int[n][n];
+//        map value to index for O(1) lookup
+        Map<Integer, Integer> valToIdx = new HashMap<>();
+        int maxLength = 0;
+//        fill the dp array
+        for(int curr = 0 ; curr < n ; curr++) {
+            valToIdx.put(arr[curr], curr);
+            for(int prev = 0 ; prev < curr ; prev++) {
+//                find if there exists a previous number to form a fibonacci sequence
+                int diff = arr[curr] - arr[prev];
+                int prevIdx = valToIdx.getOrDefault(diff, -1);
+//                update dp if valid fibonacci sequence is possible
+//                diff is less than arr[prev] ensures strictly increasing sequence
+                if(diff < arr[prev] && prevIdx != -1) {
+                    dp[prev][curr] = dp[prevIdx][prev] + 1;
+                } else{
+                    dp[prev][curr] = 2;
+                }
+                maxLength = Math.max(maxLength, dp[prev][curr]);
+            }
+        }
+//        return 0 if no sequence of length greater than 2 is found
+        return maxLength > 2 ? maxLength : 0;
     }
 }
 
