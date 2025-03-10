@@ -36,6 +36,30 @@ public class AlternatingGroups3208 {
         }
         return result;
     }
+
+//  one pass; time: O(n + k), space: O(1)
+    public  static int numberOfAlternatingGroups1(int[] colors, int k) {
+        int n = colors.length, lastColor = colors[0];
+        int result = 0, alternatingCount = 1;
+//        loop through array using circular traversal
+        for(int i = 1 ; i < n + k - 1 ; i++) {
+//            wrap around using modulo
+            int index = i % n;
+//            check if current color is the same as last color
+            if(colors[index] == lastColor) {
+                alternatingCount = 1;
+                lastColor = colors[index];
+                continue;
+            }
+//            extend alternating sequence
+            alternatingCount++;
+//            if sequence length reaches at least k, count it
+            if(alternatingCount >= k)
+                result++;
+            lastColor = colors[index];
+        }
+        return result;
+    }
 }
 
 /*
