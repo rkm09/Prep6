@@ -1,11 +1,13 @@
 package graphs;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import common.Pair;
+
+import java.util.*;
 
 public class CriticalConnection1192 {
+    Map<Integer, List<Integer>> graph;
+    Map<Integer, Integer> rank;
+    Map<Pair<Integer, Integer>, Boolean> connDict;
     public static void main(String[] args) {
         CriticalConnection1192 c = new CriticalConnection1192();
 //        int[][] arr = {{0,1},{1,2},{2,0},{1,3}};
@@ -20,71 +22,55 @@ public class CriticalConnection1192 {
     }
 
 
-//    note: this doesn't work currently
+//    dfs; time: O(V+E), space: O(E)
     public List<List<Integer>> criticalConnections(int n, List<List<Integer>> connections) {
         List<List<Integer>> resList = new ArrayList<>();
-        List<List<Integer>> adjList = new ArrayList<>();
-        for(int i = 0 ; i < n ; i++)
-            adjList.add(new ArrayList<>());
-        for(List<Integer> edge : connections) {
-            int node1 = edge.get(0);
-            int node2 = edge.get(1);
-            adjList.get(node1).add(node2);
-            adjList.get(node2).add(node1);
-        }
-        UnionFind uf = new UnionFind(n);
-        Set<Integer> nonCritical = new HashSet<>();
-        for(List<Integer> edge : connections) {
-            int node1 = edge.get(0);
-            int node2 = edge.get(1);
-            if(uf.union(node1, node2)) {
-                nonCritical.add(node1);
-                nonCritical.add(node2);
-            }
-        }
-        System.out.println(nonCritical);
-        for(List<Integer> edge : connections) {
-            if(nonCritical.contains(edge.get(0)) || nonCritical.contains(edge.get(1)))
-                continue;
-            resList.add(edge);
+        formGraph(n, connections);
+        dfs(0,0);
+        for(Pair<Integer, Integer> criticalConnection : connDict.keySet()) {
+            resList.add(new ArrayList<>(List.of(criticalConnection.getKey(), criticalConnection.getValue())));
         }
         return resList;
     }
 
-    class UnionFind {
-        private int[] parent;
-        private int[] rank;
-        private int count;
-        UnionFind(int n) {
-            parent = new int[n];
-            rank = new int[n];
-            count = n;
-            for(int i = 0 ; i < n ; i++)
-                parent[i] = i;
+    private void formGraph(int n, List<List<Integer>> connections) {
+        graph = new HashMap<>();
+        rank = new HashMap<>();
+        connDict = new HashMap<>();
+        for(List<Integer> edge : connections) {
+            int u = edge.get(0), v = edge.get(1);
+//            bidirectional edges
+            graph.computeIfAbsent(u, k -> new ArrayList<>()).add(v);
+            graph.computeIfAbsent(v, k -> new ArrayList<>()).add(u);
+            int sortedU = Math.min(u, v), sortedV = Math.max(u, v);
+            connDict.put(new Pair<>(sortedU, sortedV), true);
         }
-        public int find(int i) {
-            if(parent[i] != i)
-                parent[i] = find(parent[i]);
-            return parent[i];
-        }
-        public boolean union(int x, int y) {
-            int rootX = find(x);
-            int rootY = find(y);
-            if(rootX == rootY) return true;
-            if(rank[rootX] > rank[rootY])
-                parent[rootY] = rootX;
-            else if(rank[rootX] < rank[rootY])
-                parent[rootX] = rootY;
-            else {
-                parent[rootY] = rootX;
-                rank[rootX]++;
+    }
+
+    private int dfs(int node, int discoveryRank) {
+//        if node is already visited, return the rank
+        if(rank.get(node) != null)
+            return rank.get(node);
+//        update the rank of this node
+        rank.put(node, discoveryRank);
+//        this is the max we have seen till now, so we start with this instead of INT_MAX
+        int minRank = discoveryRank + 1;
+        for(int neighbor : graph.getOrDefault(node, new ArrayList<>())) {
+            Integer neighborRank = rank.get(neighbor);
+//            skip the parent
+            if(neighborRank != null && neighborRank == discoveryRank - 1)
+                continue;
+//            recurse on the neighbor
+            int recursiveRank = dfs(neighbor, discoveryRank + 1);
+//            step 1: check if the edge needs to be discarded
+            if(recursiveRank <= discoveryRank) {
+                int sortedU = Math.min(node, neighbor), sortedV = Math.max(node, neighbor);
+                connDict.remove(new Pair<>(sortedU, sortedV));
             }
-            count--;
-            return false;
+//            step 2: update minimum rank if needed
+            minRank = Math.min(minRank, recursiveRank);
         }
-        public int getCount() {
-            return count;
-        }
+        return minRank;
     }
 }
 
@@ -106,4 +92,10 @@ n - 1 <= connections.length <= 105
 0 <= ai, bi <= n - 1
 ai != bi
 There are no repeated connections.
+ */
+
+/*
+dfs:
+Time Complexity: O(V+E) where V represents the number of vertices and E represents the number of edges in the graph. We process each node exactly once thanks to the rank dictionary also acting as a "visited" safeguard at the top of the dfs function. Since the problem statement mentions that the graph is connected, that means E>=V and hence, the overall time complexity would be dominated by the number of edges i.e. O(E).
+Space Complexity: O(E). The overall space complexity is a sum of the space occupied by the connDict dictionary, rank dictionary, and graph data structure. E+V+(V+E) = O(E).
  */
