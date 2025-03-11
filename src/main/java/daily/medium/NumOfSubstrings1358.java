@@ -9,8 +9,31 @@ public class NumOfSubstrings1358 {
         System.out.println(numberOfSubstrings(s));
     }
 
-//    sliding window; time: O(n), space: O(n)
+//    sliding window with frequency counter; time: O(n), space: O(1)
     public static int numberOfSubstrings(String s) {
+        int n = s.length(), numOfSubstrings = 0;
+        int left = 0, right = 0;
+        int[] freq = new int[3];
+        while(right < n) {
+            char newCharacter = s.charAt(right);
+            freq[newCharacter - 'a']++;
+            while(hasAllCharacters(freq)) {
+                numOfSubstrings += n - right;
+                char startCharacter = s.charAt(left);
+                freq[startCharacter - 'a']--;
+                left++;
+            }
+            right++;
+        }
+        return numOfSubstrings;
+    }
+
+    private static boolean hasAllCharacters(int[] freq) {
+        return freq[0] > 0 && freq[1] > 0 && freq[2] > 0;
+    }
+
+//   def; sliding window; time: O(n), space: O(n)
+    public static int numberOfSubstrings1(String s) {
         int n = s.length(), numOfSubstrings = 0;
         int start = 0, end = 0;
         Map<Character, Integer> abcMap = new HashMap<>();
