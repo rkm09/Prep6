@@ -9,9 +9,40 @@ public class FindKLength1100 {
         System.out.println(numKLenSubstrNoRepeats(s, 5));
     }
 
-//    def; sliding window + map; time: O(n), space: O(n)
+//    sliding window; time: O(n), space: O(1)
     public static int numKLenSubstrNoRepeats(String s, int k) {
+//        if k > 26, there can be no strings with unique characters
+        if(k > 26) return 0;
         int n = s.length(), substrings = 0;
+        int left = 0, right = 0;
+        int[] freq = new int[26];
+        while(right < n) {
+            char newCharacter = s.charAt(right);
+            freq[newCharacter - 'a']++;
+//            keep contracting the window till count becomes 1, move left pointer accordingly
+            while(freq[newCharacter - 'a'] > 1) {
+                char startCharacter = s.charAt(left);
+                freq[startCharacter - 'a']--;
+                left++;
+            }
+//            check if the length of the current unique substring is equal to k
+            if(right - left + 1 == k) {
+                substrings++;
+                int startCharacter = s.charAt(left);
+//                contract the window and remove the leftmost, and get it ready for the next iteration
+                freq[startCharacter - 'a']--;
+                left++;
+            }
+//            expand the window
+            right++;
+        }
+        return substrings;
+    }
+
+//    def; sliding window + map; time: O(n), space: O(n)
+    public static int numKLenSubstrNoRepeats1(String s, int k) {
+        int n = s.length(), substrings = 0;
+        if(k > 26) return 0; // rather than k > n (a more generalized case this way)
         int start = 0, end = 0;
         Map<Character, Integer> letterMap = new HashMap<>();
         while(end < n) {
