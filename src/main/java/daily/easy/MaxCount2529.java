@@ -6,6 +6,7 @@ public class MaxCount2529 {
         System.out.println(maximumCount(nums));
     }
 
+//    brute force; time: O(n), space: O(1)
     public static int maximumCount(int[] nums) {
         int n = nums.length;
         if(nums[0] > 0) return n;
@@ -17,18 +18,45 @@ public class MaxCount2529 {
         return Math.max(posLen, negLen);
     }
 
-    private static int binSearch(int[] nums, int num) {
+//    binary search; time: O(logN), space: O(1)
+    public static int maximumCount1(int[] nums) {
+        int n = nums.length;
+        if(nums[0] > 0) return n;
+        int positiveCount = n - upperBound(nums);
+        int negativeCount = lowerBound(nums);
+        return Math.max(positiveCount, negativeCount);
+    }
+
+//    return the first index where the value is equal to or greater than zero
+    private static int lowerBound(int[] nums) {
         int left = 0, right = nums.length - 1;
+        int index = nums.length;
         while(left <= right) {
             int mid = left + (right - left) / 2;
-            if(nums[mid] == num)
-                return mid;
-            if(nums[mid] < num)
+            if(nums[mid] < 0)
                 left = mid + 1;
-            else
+            else {
                 right = mid - 1;
+                index = mid;
+            }
         }
-        return left;
+        return index;
+    }
+
+//    return the first index where the value is greater than zero
+    private static int upperBound(int[] nums) {
+        int left = 0, right = nums.length - 1;
+        int index = nums.length;
+        while(left <= right) {
+            int mid = left + (right - left) / 2;
+            if(nums[mid] <= 0)
+                left = mid + 1;
+            else {
+                right = mid - 1;
+                index = mid;
+            }
+        }
+        return index;
     }
 }
 
@@ -55,4 +83,7 @@ Constraints:
 nums is sorted in a non-decreasing order.
 
 Follow up: Can you solve the problem in O(log(n)) time complexity?
+
+Time complexity: O(logN)
+We perform binary search twice to find the lower and upper bounds for 0. At each step of the binary search, we discard half of the array, narrowing down the search range for the index we are looking for. Hence, the total time complexity is O(logN).
  */
