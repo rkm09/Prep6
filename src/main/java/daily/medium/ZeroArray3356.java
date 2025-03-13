@@ -10,8 +10,44 @@ public class ZeroArray3356 {
     }
 
 
-//    def; TLE !!
+//    binary search; time: O(logM(M+N)), space: O(N)   [M size of queries]
     public static int minZeroArray(int[] nums, int[][] queries) {
+        int left = 0, right = queries.length;
+//        zero array isn't formed after all queries are processed
+        if(!checkCurrentIndexForZero(nums, queries, right)) return -1;
+//        binary search
+        while(left <= right) {
+            int mid = left + (right - left) / 2;
+            if(checkCurrentIndexForZero(nums, queries, mid))
+                right = mid - 1;
+            else
+                left = mid + 1;
+        }
+//        return the earliest query that zero array can be formed with
+        return left;
+    }
+
+    private static boolean checkCurrentIndexForZero(int[] nums, int[][] queries, int k) {
+        int n = nums.length, sum = 0;
+        int[] differenceArray = new int[n + 1];
+//        process query
+        for(int i = 0 ; i < k ; i++) {
+            int left = queries[i][0], right = queries[i][1];
+            int val = queries[i][2];
+//            process start and end of the range
+            differenceArray[left] += val;
+            differenceArray[right + 1] -= val;
+        }
+//        check if zero can be formed
+        for(int index = 0 ; index < n ; index++) {
+            sum += differenceArray[index];
+            if(sum < nums[index]) return false;
+        }
+        return true;
+    }
+
+//    def; brute force; TLE !!
+    public static int minZeroArrayX(int[] nums, int[][] queries) {
         int count = 0, diff, totalDiff;
         int sum = Arrays.stream(nums).sum();
         if(sum == 0) return 0;
