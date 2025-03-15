@@ -53,8 +53,8 @@ public class CriticalConnection1192 {
             return rank.get(node);
 //        update the rank of this node
         rank.put(node, discoveryRank);
-//        this is the max we have seen till now, so we start with this instead of INT_MAX
-//        note: it won't make any diff if you rather choose to have minRank as discoveryRank + 1 instead
+//        this is the max we have seen till now, can start with [discovery + 1] instead of INT_MAX
+//        note: it won't make any diff if you rather choose to start with discoveryRank itself since it will still be greater than previous level when it returns from dfs call
         int minRank = discoveryRank;
         for(int neighbor : graph.getOrDefault(node, new ArrayList<>())) {
             Integer neighborRank = rank.get(neighbor);
