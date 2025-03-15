@@ -54,7 +54,8 @@ public class CriticalConnection1192 {
 //        update the rank of this node
         rank.put(node, discoveryRank);
 //        this is the max we have seen till now, so we start with this instead of INT_MAX
-        int minRank = discoveryRank + 1;
+//        note: it won't make any diff if you rather choose to have minRank as discoveryRank + 1 instead
+        int minRank = discoveryRank;
         for(int neighbor : graph.getOrDefault(node, new ArrayList<>())) {
             Integer neighborRank = rank.get(neighbor);
 //            skip the parent
