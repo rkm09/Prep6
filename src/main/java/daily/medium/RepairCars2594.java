@@ -1,5 +1,7 @@
 package daily.medium;
 
+import java.util.*;
+
 public class RepairCars2594 {
     public static void main(String[] args) {
         int[] ranks = {4,2,3,1};
@@ -7,7 +9,7 @@ public class RepairCars2594 {
     }
 
 
-//    binary search; time: O(n + max_rank.log(m.max_rank)), space: O(max_rank)
+//    binary search on time; time: O(n + max_rank.log(m.max_rank)), space: O(max_rank)  [fastest]
     public static long repairCars(int[] ranks, int cars) {
 //        either initialize with any element say rank[0] or like so, but note not 0 as that make it incorrect
         int maxRank = Integer.MIN_VALUE, minRank = Integer.MAX_VALUE;
@@ -38,6 +40,55 @@ public class RepairCars2594 {
                 low = mid + 1;  // need more time
         }
         return low;
+    }
+
+//    space optimized binary search; time: O(n.log(m.max_rank)), space: O(1)
+    public static long repairCars1(int[] ranks, int cars) {
+        int minRank = Arrays.stream(ranks).min().getAsInt();
+        long low = 1, high = (long) minRank * cars * cars;
+        while(low < high) {
+            long mid = low + (high - low) / 2;
+            long carsRepaired = 0;
+            for(int rank : ranks)
+                carsRepaired += (long) Math.sqrt(1.0 * mid / rank);
+            if(carsRepaired >= cars)
+                high = mid;
+            else
+                low = mid + 1;
+        }
+        return low;
+    }
+
+//    min heap; time: O(n + mlogk), space: O(k)
+    public static long repairCars2(int[] ranks, int cars) {
+        Map<Integer, Integer> count = new HashMap<>();
+//        count the frequency of each rank
+        for(int rank : ranks)
+            count.put(rank, count.getOrDefault(rank, 0) + 1);
+//        long[] elements: [time, rank, cars repaired by this mechanic, number of mechanics at this rank]
+        PriorityQueue<long[]> minHeap = new PriorityQueue<>(Comparator.comparingLong(a->a[0]));
+//        initial time is rank [time(1): rank * 1 * 1]
+        for(int rank : count.keySet())
+            minHeap.offer(new long[] {rank, rank, 1, count.get(rank)});
+        long time = 0;
+//        process until all cars are repaired
+        while(cars > 0) {
+//            pop the mechanic group with the smallest current repair time
+            long[] current = minHeap.poll();
+            time = current[0];
+            int rank = (int) current[1];
+            long n = current[2];
+            int mechanicCount = (int) current[3];
+
+//            deduct the number of cars repaired by this mechanic group
+            cars -= mechanicCount;
+//            increment the number of cars repaired by this mechanic
+            n += 1;
+//            push the updated repair time back into the queue
+//            the new repair time is rank * n^2 (time increases quadratically with n)
+            minHeap.offer(new long[]{rank * n * n, rank, n, mechanicCount});
+        }
+        return time;
     }
 }
 
@@ -72,7 +123,24 @@ Constraints:
 
 /*
 Binary search:
+The problem essentially boils down to distributing the cars optimally among the mechanics so that the maximum repair time (the slowest mechanic) is minimized. Another way to say this is that a mechanic with a lower rank (higher skill) can repair cars faster than one with a higher rank. A
+A common mistake is misunderstanding how parallel execution works. Instead of focusing on the slowest mechanic, some mistakenly add up all the repair times, as if the tasks were done sequentially. This misinterpretation leads to incorrect conclusions about the total time required.
+Another mistake is assuming dynamic programming (DP) is always the right approach for optimization problems. When faced with minimization or maximization, our first instinct might be to reach for DP.
+However, before committing to it, we need to check the constraints. If the problem lacks overlapping sub problems or an optimal substructure, DP may not be a suitable choice.
+In this problem, we are given: ranks.length can be up to 10^5
+cars can be up to 10^6
+A typical DP solution would require a state representation like dp[mechanic][car]. The time complexity would then be O(n⋅cars), which in the worst case is 10
+5×10^6=10^11 operations. This is far too large to be computationally feasible.
+A good approach here can be to use binary search, as it provides a more natural way to minimize the maximum time while still efficiently distributing cars.
+Takeaway Tip: When deciding on an approach, always check the constraints first. If n and cars are large (in the range of 10 5to 10 6), DP is usually not feasible. Instead, binary search, greedy, or two pointers are more likely to work in such cases.
 Let n be the size of the ranks array, m be the number of cars (cars).
+More technically, given a fixed time t, we can determine how many cars can be repaired within that time using a simple formula. But how do we actually find the smallest t that allows all cars to be repaired?
+We observe that if a given time t is sufficient to repair all cars, then any time greater than t will also be sufficient. Conversely, if t is not enough, then any time smaller than t will also fail.
+This forms a monotonic relationship:
+If t is too small, increasing t will eventually make it work.
+If t is large enough, decreasing t will still work until we hit the minimum threshold.
+This kind of "yes/no" behavior, where a function transitions from failure to success at a specific boundary, is exactly when binary search is useful. Instead of checking every possible value of t from 1 to minRank * cars^2, we can narrow down the search space logarithmically.
+
 Time Complexity: O(n+max_ranklog(m⋅max_rank))
 The algorithm starts by iterating through the ranks array to compute the minimum rank and build a frequency array. This step takes O(n) time, as it involves a single pass over the array. Next, the algorithm performs a binary search over the possible time range, which spans from 1 to 1L⋅minRank⋅m⋅m. The binary search runs in O(log(m⋅max_rank)) iterations, where max_rank is the maximum rank in the ranks array.
 For each iteration of the binary search, the algorithm calculates the total number of cars that can be repaired in mid time. This involves iterating over the frequency array which has a fixed size of max_rank and computing the square root of the ratio of mid to the rank for each entry. This computation takes O(max_rank) time per iteration. Combining these steps, the overall time complexity is O(n+max_ranklog(m⋅max_rank)).
