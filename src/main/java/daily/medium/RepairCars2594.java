@@ -9,30 +9,33 @@ public class RepairCars2594 {
 
 //    binary search; time: O(n + max_rank.log(m.max_rank)), space: O(max_rank)
     public static long repairCars(int[] ranks, int cars) {
-//        either initialize with any element say rank[0] or like so..but note not 0 as that make it incorrect
+//        either initialize with any element say rank[0] or like so, but note not 0 as that make it incorrect
         int maxRank = Integer.MIN_VALUE, minRank = Integer.MAX_VALUE;
+//        find min and max rank
         for(int rank : ranks) {
             maxRank = Math.max(maxRank, rank);
             minRank = Math.min(minRank, rank);
         }
-
+//        frequency array that keep tracks of the number of mechanics at each rank
         int[] freq = new int[maxRank + 1];
-        for(int rank : ranks) {
-            minRank = Math.min(minRank, rank);
+        for(int rank : ranks)
             freq[rank]++;
-        }
 
+//        minimum and maximum possible time
         long low = 1, high = (long) minRank * cars * cars;
+//        perform binary search to find the minimum time required
         while(low < high) {
             long mid = low + (high - low) / 2;
             long carsRepaired = 0;
+//            calculate the total number of cars that can be repaired in 'mid' time
             for(int rank = 1 ; rank <= maxRank ; rank++) {
                 carsRepaired += freq[rank] * (long) Math.sqrt((double) mid / rank);
             }
+//            adjust the search boundaries based on the number of cars repaired
             if(carsRepaired >= cars)
-                high = mid;
+                high = mid; // try to find a smaller time window
             else
-                low = mid + 1;
+                low = mid + 1;  // need more time
         }
         return low;
     }
