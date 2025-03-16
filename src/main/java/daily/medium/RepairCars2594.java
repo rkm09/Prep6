@@ -59,7 +59,7 @@ public class RepairCars2594 {
         return low;
     }
 
-//    min heap; time: O(n + mlogk), space: O(k)
+//    min heap; time: O(n + mlogk), space: O(k)  [m - number of cars, k - max possible rank]
     public static long repairCars2(int[] ranks, int cars) {
         Map<Integer, Integer> count = new HashMap<>();
 //        count the frequency of each rank
@@ -146,4 +146,10 @@ The algorithm starts by iterating through the ranks array to compute the minimum
 For each iteration of the binary search, the algorithm calculates the total number of cars that can be repaired in mid time. This involves iterating over the frequency array which has a fixed size of max_rank and computing the square root of the ratio of mid to the rank for each entry. This computation takes O(max_rank) time per iteration. Combining these steps, the overall time complexity is O(n+max_ranklog(m⋅max_rank)).
 Space Complexity: O(max_rank)
 The algorithm uses a frequency array of size max_rank to store the count of mechanics for each rank. This array occupies O(max_rank) space. Additionally, a few variables are used for the binary search (low, high, mid, carsRepaired) and for storing the minimum rank, all of which require constant space, O(1). Thus, the overall space complexity is O(max_rank).
- */
+
+Min heap:
+Instead of using binary search, we can directly simulate the car repair process using a min-heap to always prioritize the mechanic who can complete the next repair in the shortest possible time. Since each mechanic follows the formula time = rank * n^2 to determine how long it takes to repair their k-th car, we can predict the sequence of repair times for each mechanic. The first car takes rank * 1^2 = rank time, the second car takes rank * 4 time, the third car takes rank * 9 time, and so on.
+Given this pattern, at any moment, the mechanic who will finish the next repair the fastest should be chosen to repair the next car. The most efficient way to track the next available repair time for all mechanics is to use a min-heap, where each entry stores the next repair time for a mechanic, their rank (to calculate future repair times), the number of cars they have already repaired, and the count of mechanics with that rank (since multiple mechanics can have the same rank).
+We begin by initializing the heap with the first repair time for each unique rank. If multiple mechanics share the same rank, we keep track of how many exist. Then, we repeatedly extract the mechanic with the earliest repair time and assign them the next car to repair. Once a mechanic repairs a car, we compute their next available repair time using the formula time = rank * (n + 1)^2, then push this new time back into the heap. This process continues until all cars are repaired.
+By always selecting the fastest available repair, we ensure that the total time remains minimal while efficiently distributing the workload among mechanics. Since each mechanic’s repair time follows a monotonically increasing pattern, the heap naturally maintains the correct ordering.
+*/
