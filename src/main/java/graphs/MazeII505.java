@@ -1,6 +1,8 @@
 package graphs;
 
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
 
 public class MazeII505 {
     public static void main(String[] args) {
@@ -10,7 +12,7 @@ public class MazeII505 {
         System.out.println(m.shortestDistance(maze, start, destination));
     }
 
-//    dfs;
+//    dfs; time: O(m.n.max(m,n)), space: O(m.n)
     public int shortestDistance(int[][] maze, int[] start, int[] destination) {
         int[][] distance = new int[maze.length][maze[0].length];
         for(int[] row : distance)
@@ -38,6 +40,37 @@ public class MazeII505 {
                 dfs(maze, new int[]{x - dir[0], y - dir[1]}, distance);
             }
         }
+    }
+
+//    bfs; time: O(m.n.max(m,n)), space: O(m.n)
+    public int shortestDistance1(int[][] maze, int[] start, int[] destination) {
+        int rows = maze.length, cols = maze[0].length;
+        int[][] dirs = {{0,-1},{0,1},{-1,0},{1,0}};
+        int[][] distance = new int[rows][cols];
+        for(int[] row : distance)
+            Arrays.fill(row, Integer.MAX_VALUE);
+        distance[start[0]][start[1]] = 0;
+        Deque<int[]> queue = new ArrayDeque<>();
+        queue.offer(start);
+        while(!queue.isEmpty()) {
+            int[] current = queue.poll();
+            for(int[] dir : dirs) {
+                int x = current[0] + dir[0];
+                int y = current[1] + dir[1];
+                int count = 0;
+                while(x >= 0 && x < rows && y >= 0 && y < cols && maze[x][y] == 0) {
+                    x += dir[0];
+                    y += dir[1];
+                    count++;
+                }
+                if(distance[current[0]][current[1]] + count < distance[x - dir[0]][y - dir[1]]) {
+                    distance[x - dir[0]][y - dir[1]] = distance[current[0]][current[1]] + count;
+                    queue.offer(new int[]{x - dir[0], y - dir[1]});
+                }
+            }
+        }
+        return distance[destination[0]][destination[1]] == Integer.MAX_VALUE ? -1 :
+                distance[destination[0]][destination[1]];
     }
 }
 
@@ -70,4 +103,12 @@ destination.length == 2
 0 <= startcol, destinationcol < n
 Both the ball and the destination exist in an empty space, and they will not be in the same position initially.
 The maze contains at least 2 empty spaces.
+ */
+
+/*
+We can view the given search space in the form of a tree. The root node of the tree represents the starting position. Four different routes are possible from each position i.e. left, right, up or down. These four options can be represented by 4 branches of each node in the given tree. Thus, the new node reached from the root traversing over the branch represents the new position occupied by the ball after choosing the corresponding direction of travel.
+DFS:
+Time complexity : O(m∗n∗max(m,n)). Complete traversal of maze will be done in the worst case. Here, m and n refers to the number of rows and columns of the maze. Further, for every current node chosen, we can travel upto a maximum depth of max(m,n) in any direction.
+Space complexity : O(mn). distance array of size m∗n is used.
+
  */
