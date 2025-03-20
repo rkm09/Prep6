@@ -16,7 +16,7 @@ public class MinCost3108 {
     public int[] minimumCost(int n, int[][] edges, int[][] query) {
         List<List<int[]>>  adjList = new ArrayList<>();
         for(int i = 0 ; i < n ; i++)
-            adjList.add(new ArrayList<>(2));
+            adjList.add(new ArrayList<>());
         for(int[] edge : edges) {
             adjList.get(edge[0]).add(new int[]{edge[1], edge[2]});
             adjList.get(edge[1]).add(new int[]{edge[0], edge[2]});
