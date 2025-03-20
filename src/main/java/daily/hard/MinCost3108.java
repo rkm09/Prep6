@@ -12,6 +12,7 @@ public class MinCost3108 {
         System.out.println(Arrays.toString(m.minimumCost(5, edges, query)));
     }
 
+//    dfs; time: O(m + n + q), space: O(m + n)
     public int[] minimumCost(int n, int[][] edges, int[][] query) {
         List<List<int[]>>  adjList = new ArrayList<>();
         for(int i = 0 ; i < n ; i++)
