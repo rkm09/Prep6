@@ -14,7 +14,7 @@ public class MinCost3108 {
 
 //    dfs; time: O(m + n + q), space: O(m + n)
     public int[] minimumCost(int n, int[][] edges, int[][] query) {
-        List<List<int[]>>  adjList = new ArrayList<>();
+        List<List<int[]>> adjList = new ArrayList<>();
         for(int i = 0 ; i < n ; i++)
             adjList.add(new ArrayList<>());
         for(int[] edge : edges) {
