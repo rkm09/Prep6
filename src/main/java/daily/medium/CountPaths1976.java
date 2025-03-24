@@ -19,9 +19,10 @@ public class CountPaths1976 {
             graph.get(road[0]).add(new int[] {road[1], road[2]});
             graph.get(road[1]).add(new int[] {road[0], road[2]});
         }
-//        min heap for dijikstra [with respect to time]
+//        min heap for dijikstra [order with respect to time]
         PriorityQueue<long[]> minHeap = new PriorityQueue<>(Comparator.comparingLong(a->a[1]));
-        minHeap.offer(new long[]{0,0});
+//        minHeap -> {node, time}
+        minHeap.offer(new long[] {0,0});
 //        store shortest time to each node
         long[] shortestTime = new long[n];
         Arrays.fill(shortestTime, Long.MAX_VALUE);
@@ -36,7 +37,7 @@ public class CountPaths1976 {
             int currNode = (int) nodeInfo[0];
 //            current shortest time
             long currTime = nodeInfo[1];
-//            skip outdated distances
+//            skip outdated distances [a possible backtrack to a previous node]
             if(currTime > shortestTime[currNode])
                 continue;
             for(int[] neighbour : graph.get(currNode)) {
