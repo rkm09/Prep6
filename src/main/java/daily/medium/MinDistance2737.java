@@ -75,7 +75,7 @@ public class MinDistance2737 {
     }
 
 
-//    shortest path faster algorithm [SPFA]; time: O(m.n), space: O(m.n)
+//    shortest path faster algorithm [SPFA]; time: O(m.n), space: O(m.n) [fast]
     public static int minimumDistance2(int n, List<List<Integer>> edges, int s, int[] marked) {
 //        build the graph
         List<List<int[]>> graph = new ArrayList<>();
