@@ -17,7 +17,7 @@ public class MinDistance2737 {
     }
 
 
-//    dijikstra; time: O((m+n)logn), space: O(n + m)  [fastest]
+//    dijkstra; time: O((m+n)logn), space: O(n + m)  [fast]
     public static int minimumDistance(int n, List<List<Integer>> edges, int s, int[] marked) {
         List<List<int[]>> graph = new ArrayList<>();
         Set<Integer> markedSet = new HashSet<>();
@@ -156,7 +156,7 @@ The graph is generated such that it has no self-loops.
  */
 
 /*
-Dijikstra:
+Dijkstra:
 When solving shortest-path problems in graphs, the first algorithm that comes to mind is Dijkstra’s Algorithm. This well-known approach is especially effective for finding the shortest distance from a source node to other nodes in a weighted graph, as long as all edge weights are non-negative.
 The core idea behind Dijkstra’s Algorithm is to explore the graph outward from the source node, always moving in order of increasing distance. This greedy strategy ensures that once we reach a node, we have found the shortest possible path to it.
 

@@ -10,6 +10,7 @@ public class CompleteComponents2685 {
 
     }
 
+//    union find; time: O(n + alpha(m)), space: O(n)
     public int countCompleteComponents(int n, int[][] edges) {
         UnionFind dsu = new UnionFind(n);
         Map<Integer, Integer> edgeCount = new HashMap<>();
@@ -95,4 +96,15 @@ edges[i].length == 2
 0 <= ai, bi <= n - 1
 ai != bi
 There are no repeated edges.
+ */
+
+/*
+Union Find:
+Let n be the number of vertices and m be the number of edges in the given graph.
+Time complexity: O(n+mα(n))
+The solution uses a Union-Find data structure with path compression and union by size. Building the Union-Find structure takes O(n) time for initialization. Processing all edges through union operations takes O(mα(n)) time, where α(n) is the inverse Ackermann function, which grows extremely slowly and is practically constant.
+Counting edges in each component requires iterating through all edges again, taking O(m) time. Finally, checking if each component is complete involves iterating through all vertices once, taking O(n) time.
+Therefore, the overall time complexity is O(n+mα(n)), which is essentially linear in practice.
+Space complexity: O(n)
+The Union-Find data structure uses two arrays of size n for parent pointers and component sizes, requiring O(n) space. The edge count map stores at most n entries (one for each potential component root), requiring O(n) space. Therefore, the overall space complexity is O(n).
  */
