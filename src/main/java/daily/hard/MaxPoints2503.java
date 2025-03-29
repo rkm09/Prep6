@@ -1,4 +1,4 @@
-package daily.medium;
+package daily.hard;
 
 import java.util.*;
 
