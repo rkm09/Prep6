@@ -10,8 +10,21 @@ public class SubsetXORSum1863 {
         System.out.println(s.subsetXORSum(nums));
     }
 
-//    backtracking(generate all possible subsets); time: O(N.2^N), space: O(N.2^N)
+//    optimized backtracking; time: O(2^n), space: O(n)
     public int subsetXORSum(int[] nums) {
+        return xorSum(nums, 0, 0);
+    }
+
+    private int xorSum(int[] nums, int index, int currentXOR) {
+        if(index == nums.length)
+            return currentXOR;
+        int withElement = xorSum(nums, index + 1, currentXOR ^ nums[index]);
+        int withoutElement = xorSum(nums, index + 1, currentXOR);
+        return withElement + withoutElement;
+    }
+
+//    backtracking(generate all possible subsets); time: O(N.2^N), space: O(N.2^N)
+    public int subsetXORSum1(int[] nums) {
         int result = 0;
         List<List<Integer>> subsetList = new ArrayList<>();
 //        generate all possible subsets
@@ -32,6 +45,7 @@ public class SubsetXORSum1863 {
         if(index == nums.length) {
 //            note: you have to add a new arraylist and pass subset to it, can't do it directly (will give incorrect result)
             subsetList.add(new ArrayList<>(subset));
+//            don't forget this step
             return;
         }
 //        generate subsets with nums[i]
@@ -97,4 +111,12 @@ Therefore, the overall time complexity is O(2^N +N/2.2^N), which we can represen
 Space complexity: O(N⋅2^N)
 The subsets list will contain 2^N subsets with an average size of N/2, so it requires O(N/2⋅2^N) space.
 The recursion depth can reach size N because we generate subsets with and without each index in nums. The recursive call stack may use up to O(N) space.
+
+Optimized Backtracking:
+Complexity:
+Let N be the size of nums.
+Time complexity: O(2^N)
+We traverse through each of the 2^N subsets to calculate the result.
+Space complexity: O(N)
+The recursion depth can reach N because we calculate the XOR totals for each of the N indices in nums. The recursive call stack may require up to O(N) space.
  */
