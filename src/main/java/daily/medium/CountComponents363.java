@@ -7,6 +7,7 @@ public class CountComponents363 {
         System.out.println(c.countComponents(5, edges));
     }
 
+//    dsu; time: O(V + E.alpha(n)), space: O(V)
     public int countComponents(int n, int[][] edges) {
         UnionFind uf = new UnionFind(n);
         for(int[] edge : edges) {
