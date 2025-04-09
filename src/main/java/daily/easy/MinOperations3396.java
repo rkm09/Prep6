@@ -7,6 +7,8 @@ public class MinOperations3396 {
     }
 
     public static int minimumOperations(int[] nums) {
+        int n = nums.length;
+
         return 0;
     }
 }
