@@ -1,15 +1,44 @@
 package daily.easy;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class MinOperations3396 {
     public static void main(String[] args) {
         int[] nums = {4,5,6,4,4};
         System.out.println(minimumOperations(nums));
     }
 
+//    reverse traversal; time: O(n), space: O(1)
     public static int minimumOperations(int[] nums) {
-        int n = nums.length;
+        int n = nums.length, ops = 0;
+        boolean[] seen = new boolean[101];
+        for(int i = n - 1 ; i >= 0 ; i--) {
+            if(seen[nums[i]])
+                return i / 3 + 1;
+            seen[nums[i]] = true;
+        }
+        return ops;
+    }
 
-        return 0;
+//    brute force; time: O(n^2), space: O(n)
+    public static int minimumOperations1(int[] nums) {
+        int n = nums.length, ops = 0;
+        for(int i = 0 ; i < n ; i += 3, ops++) {
+            if(checkDistinct(nums, i))
+                return ops;
+        }
+        return ops;
+    }
+
+    private static boolean checkDistinct(int[] nums, int start) {
+        Set<Integer> set = new HashSet<>();
+        for(int i = start ; i < nums.length ; i++) {
+            if(set.contains(nums[i]))
+                return false;
+            set.add(nums[i]);
+        }
+        return true;
     }
 }
 
