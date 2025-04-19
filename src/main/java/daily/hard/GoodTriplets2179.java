@@ -8,7 +8,7 @@ public class GoodTriplets2179 {
     }
 
     public static long goodTriplets(int[] nums1, int[] nums2) {
-
+        return 0;
     }
 }
 
