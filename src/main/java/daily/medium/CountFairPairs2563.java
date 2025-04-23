@@ -37,7 +37,7 @@ public class CountFairPairs2563 {
         long ans = 0;
         for(int i = 0 ; i < n ; i++) {
 //            assume we have picked nums[i] as the first pair element
-//            'low' indicats number of possible pairs with sum < lower
+//            'low' indicates number of possible pairs with sum < lower
             long low = lowerBinSearch(nums, i + 1, n - 1, lower - nums[i]);
 //            'high' indicates number of possible pairs with sum <= upper
             long high = lowerBinSearch(nums, i + 1, n - 1, upper - nums[i] + 1);
