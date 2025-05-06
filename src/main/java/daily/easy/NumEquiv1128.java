@@ -19,7 +19,7 @@ public class NumEquiv1128 {
         return count;
     }
 
-    
+
 //    TLE; brute force
     public static int numEquivDominoPairsX(int[][] dominoes) {
         int count = 0, n = dominoes.length;
