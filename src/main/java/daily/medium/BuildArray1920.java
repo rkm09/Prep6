@@ -9,8 +9,20 @@ public class BuildArray1920 {
         System.out.println(Arrays.toString(res));
     }
 
-//    time: O(n), space: O(1)
+//    in-place; time: O(n), space: O(1)
     public static int[] buildArray(int[] nums) {
+        int n = nums.length;
+        for(int i = 0 ; i < n ; i++) {
+            nums[i] += 1000 * (nums[nums[i]] % 1000);
+        }
+        for(int i = 0 ; i < n ; i++) {
+            nums[i] = nums[i] / 1000;
+        }
+        return nums;
+    }
+
+//    time: O(n), space: O(1) [separate result]
+    public static int[] buildArray1(int[] nums) {
         int n = nums.length;
         int[] res = new int[n];
         for(int i = 0 ; i < n ; i++) {
@@ -44,4 +56,12 @@ Constraints:
 The elements in nums are distinct.
 
 Follow-up: Can you solve it without using an extra space (i.e., O(1) memory)?
+ */
+
+/*
+In order to allow the construction process to proceed completely, we need to enable each element nums[i] in nums to store both the 'current value' (i.e., nums[i]) and the 'final value' (i.e., nums[nums[i]]).
+We notice that the range of values of the elements in nums is [0,999] inclusive, which means that both the 'current value' and the 'final value' of each element in nums are within the closed interval [0,999].
+Therefore, we can use a concept similar to the "1000-based system" to represent the "current value" and "final value" of each element. For each element, we use the quotient when it is divided by 1000 to represent its "final value," and the remainder to represent its "current value."
+So, we first traverse nums, calculate the "final value" of each element, and add 1000 times that value to the element. Then, we traverse the array again, and divide the value of each element by 1000, retaining the quotient. At this point, nums is the completed array, and we return this array as the answer.
+When calculating the "final value" of nums[i] and modifying the element, we need to calculate the value of nums[nums[i]] before the modification, and the element at the index nums[i] in nums may have been modified. Therefore, we need to take the modulus of the value at that index with 1000 to get the "final value".
  */
