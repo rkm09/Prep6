@@ -2,7 +2,7 @@ package daily.medium;
 
 public class MinSum2918 {
     public static void main(String[] args) {
-        int[] nums1 = {3,2,0,1,0};
+        int[] nums1 = {3,2,0,1,0,0,0,0,0,0,0,0};
         int[] nums2 = {6,5,0};
         System.out.println(minSum(nums1,nums2));
     }
@@ -27,7 +27,7 @@ public class MinSum2918 {
         }
         if((zero1 == 0 && sum1 < sum2) || (zero2 == 0 && sum1 > sum2))
             return -1;
-        
+
         return Math.max(sum1, sum2);
     }
 }

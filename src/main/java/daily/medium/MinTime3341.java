@@ -7,7 +7,7 @@ public class MinTime3341 {
     }
 
     public static int minTimeToReach(int[][] moveTime) {
-
+        return 0;
     }
 }
 
