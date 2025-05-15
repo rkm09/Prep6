@@ -44,3 +44,20 @@ groups[i] is either 0 or 1.
 words consists of distinct strings.
 words[i] consists of lowercase English letters.
  */
+
+/*
+Greedy:
+The task is to find the longest subsequence in groups where adjacent elements are different. Since the array groups contains only two possible values, 0 and 1, the problem simplifies to removing consecutive duplicates. In other words, we can construct the longest valid subsequence by selecting just one representative element from each group of consecutive identical values. For example, given the input:
+[0,0,0,1,1,1,0,1,0,1,1,1]
+we can break it into segments of consecutive identical elements:
+[[0,0,0],[1,1,1],[0],[1],[0],[1,1,1]]
+To ensure adjacent elements in the resulting subsequence are different, we select a single index from each segment. In order to maximize the subsequence length, we must select exactly one index from every segment of identical elements. At the same time, we append the corresponding string from words to the result.
+For ease of implementation, we can simply select either the leftmost or the rightmost index from each segment. For the array above, the index groups of identical values are:
+[[0,1,2],[3,4,5],[6],[7],[8],[9,10,11]]
+From these, we can construct two valid sets of indices by picking either:
+The leftmost index of each segment:
+[0,3,6,7,8,9]
+Or the rightmost index of each segment:
+[2,5,6,7,8,11]
+Here we choose the leftmost index from each segment and add the corresponding string from words to the final answer.
+ */
