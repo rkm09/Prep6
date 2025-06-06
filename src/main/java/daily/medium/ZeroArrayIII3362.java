@@ -8,7 +8,7 @@ public class ZeroArrayIII3362 {
     }
 
     public static int maxRemoval(int[] nums, int[][] queries) {
-
+        return 0;
     }
 }
 

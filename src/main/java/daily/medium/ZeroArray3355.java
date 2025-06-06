@@ -8,7 +8,7 @@ public class ZeroArray3355 {
     }
 
     public static boolean isZeroArray(int[] nums, int[][] queries) {
-
+        return false;
     }
 }
 

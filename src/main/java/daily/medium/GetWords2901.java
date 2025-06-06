@@ -10,7 +10,7 @@ public class GetWords2901 {
     }
 
     public static List<String> getWordsInLongestSubsequence(String[] words, int[] groups) {
-
+        return List.of();
     }
 }
 

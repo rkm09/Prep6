@@ -7,7 +7,7 @@ public class LongestPalindrome2131 {
     }
 
     public static int longestPalindrome(String[] words) {
-
+        return 0;
     }
 }
 
