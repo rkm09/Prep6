@@ -47,3 +47,12 @@ Thus, we return 99.
 Constraints:
 1 <= num <= 108
  */
+
+/*
+Complexity Analysis
+Let num be the given number.
+Time complexity: O(lognum).
+To generate the minimum and maximum values, we need to traverse each digit of num. Since the number of digits in num is O(lognum), the time required is also O(lognum).
+Space complexity: O(lognum).
+Similarly, to generate the minimum and maximum values, we need to store each digit of num, requiring O(lognum) space.
+ */
